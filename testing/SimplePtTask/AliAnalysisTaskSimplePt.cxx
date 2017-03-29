@@ -333,6 +333,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
   }
   //Loop to match up Dimouns
+  AliAODEvent *dimuAODEvent = dynamic_cast<AliAODEvent*>();
 
   for (Int_t iTrack = 0; iTrack < nTracks; iTrack++) {
 
@@ -355,7 +356,9 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2);
 
-      fAODEvent->AddDimuon(dimu);
+
+
+      dimuAODEvent->AddDimuon(dimu);
 
     }
 
@@ -366,9 +369,9 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
 
   // Loop over Dimuons
-  for ( Int_t iDimuon = 0; iDimuon < fAODEvent->GetNumberOfDimuons(); iDimuon++) {
+  for ( Int_t iDimuon = 0; iDimuon < dimuAODEvent->GetNumberOfDimuons(); iDimuon++) {
 
-    AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>( fAODEvent->GetDimuon(iDimuon) );
+    AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>( dimuAODEvent->GetDimuon(iDimuon) );
 
 
     Bool_t isMuSelected[2] = {kFALSE,kFALSE};
