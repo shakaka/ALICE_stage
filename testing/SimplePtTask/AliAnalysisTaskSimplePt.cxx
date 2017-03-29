@@ -339,15 +339,32 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(iTrack);
 
     if (!track1) {
-      AliError(Form("ERROR: Could not retrieve track %d", iTrack));
+      AliError(Form("ERROR: Could not retrieve track1 %d", iTrack));
       continue;
     }
+    if ( ! fMuonTrackCuts->IsSelected(track1) ) continue;
+
+    for (Int_t jTrack = iTrack+1; jTrack < nTracks; jTrack++) {
+      AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(jTrack);
+
+      if (!track2) {
+        AliError(Form("ERROR: Could not retrieve track2 %d", jTrack));
+        continue;
+      }
+      if ( ! fMuonTrackCuts->IsSelected(track2) ) continue;
+
+      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(iTrack, jTrack);
+
+      fAODEvent.AddObject(dimu);
+
+    }
+
   }
 
 
 
 
-/*
+
   // Loop over Dimuons
   for ( Int_t iDimuon = 0; iDimuon < fAODEvent->GetNumberOfDimuons(); iDimuon++) {
 
@@ -412,7 +429,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
     ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chMu);
   }
-*/
+
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);
   PostData(2, fEventCounters);
