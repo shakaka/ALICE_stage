@@ -333,7 +333,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
   }
   //Loop to match up Dimouns
-  AliAODEvent *dimuAODEvent = dynamic_cast<AliAODEvent*>();
+  AliAODEvent *dimuAODEvent = new AliAODEvent;
 
   for (Int_t iTrack = 0; iTrack < nTracks; iTrack++) {
 
