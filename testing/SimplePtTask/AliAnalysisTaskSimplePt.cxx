@@ -355,7 +355,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2);
 
-      fAODEvent->AddObject(dimu);
+      fAODEvent->AddDimuon(dimu);
 
     }
 
