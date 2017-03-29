@@ -380,7 +380,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
     }
 
-    //    if ( !(isMuSelected[0] && isMuSelected[1]) ) continue;
+       if ( !(isMuSelected[0] && isMuSelected[1]) ) continue;
 
 
 
@@ -392,7 +392,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     AliAODTrack *track2 = (AliAODTrack*) dimu->GetMu(0);
     AliAODTrack *track3 = (AliAODTrack*) dimu->GetMu(1);
 
-    //if(track2->Charge()*track3->Charge()==1) continue;
+    if(track2->Charge()*track3->Charge()==1) continue;
 
     Short_t chMu = track2->Charge()*track3->Charge();
 
