@@ -1,0 +1,19 @@
+
+AliAnalysisTaskSimplePt is an example class to analyze muon data. It uses AliCounterCollection class and create an event counter as well as an array of histograms. It loops over event (in UserExec method) and over single muon and dimuon pairs. 
+
+Header file:
+AliAnalysisTaskSimplePt.h
+
+Core file:
+AliAnalysisTaskSimplePt.cxx
+
+Macro to add the task:
+AddTaskSimplePt.C
+
+Macro to run the task locally (using local AOD file):
+RunLocal.C
+
+Macro to read the output file created by the analysis task (test.root):
+DrawSimplePt.C
+
+

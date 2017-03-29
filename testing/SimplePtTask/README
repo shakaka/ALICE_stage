@@ -1,0 +1,30 @@
+
+AliAnalysisTaskSimplePt is an example class to analyze muon data. It uses AliCounterCollection class and create an event counter as well as an array of histograms. It loops over event (in UserExec method) and over single muon and dimuon pairs. 
+
+Header file:
+AliAnalysisTaskSimplePt.h
+Core file:
+AliAnalysisTaskSimplePt.cxx
+Macro to add the task:
+AddTaskSimplePt.C
+
+Macro to run the task AliAnalysisTaskSimplePt locally (using local AOD file):
+RunLocal.C
+// Usage: type root / .L RunLocal.C / RunLocal("2015/LHC15o/000246994/muon_calo_pass1/AOD/001/AliAOD.Muons.root")
+// Input: muon AOD
+// Output: test.root containing eventCounters and an array of histograms
+
+Macro to read the output file created by the analysis task (test.root):
+DrawSimplePt.C
+// Usage: type root / .L DrawSimplePt.C++ (better to compile it to avoid stupid errors)
+// Intput: test.root
+// Output: it will just create some histograms
+
+
+You may have note the file rootlogon.C: this macro is executed each time you run root and you can add here all needed path for compilation of your macros. 
+
+You have many informations on Muon analysis / data taking... here: https://twiki.cern.ch/twiki/bin/view/ALICE/PWGmuon
+- AliMuonEventCuts and AliMuonTrackCuts: https://twiki.cern.ch/twiki/bin/view/ALICE/MuonTrackCuts
+
+You may want to access the header file of the classes used in your macro: see $ALICE_PHYSICS/include and $ALICE_ROOT/include 
+
