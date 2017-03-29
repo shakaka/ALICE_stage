@@ -345,7 +345,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     if ( ! fMuonTrackCuts->IsSelected(track1) ) continue;
 
     for (Int_t jTrack = iTrack+1; jTrack < nTracks; jTrack++) {
-      AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(jTrack);
+      AliAODTrack *track2 = (AliAODTrack*) fAODEvent->GetTrack(jTrack);
 
       if (!track2) {
         AliError(Form("ERROR: Could not retrieve track2 %d", jTrack));
@@ -353,9 +353,9 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       }
       if ( ! fMuonTrackCuts->IsSelected(track2) ) continue;
 
-      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(iTrack, jTrack);
+      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2);
 
-      fAODEvent.AddObject(dimu);
+      fAODEvent->AddObject(dimu);
 
     }
 
