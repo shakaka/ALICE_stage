@@ -14,7 +14,7 @@ void RunPoD(
 	    Int_t runNumber = 245346, //246434
 	    TString dataset = "Find;"
                     "BasePath=/alice/data/2015/LHC15o/%09d/muon_calo_pass1/AOD175/*/;"
-                    "FileName=AliAOD.root;"
+                    "FileName=AliAOD.Muons.root;"
                     "Tree=/aodTree;"
                     "Mode=remote;",  // <-- much faster dataset creation
   Bool_t usePhysicsSelection = kTRUE,
@@ -25,7 +25,7 @@ void RunPoD(
   // Not needed on the VAF
   //gEnv->SetValue("XSec.GSI.DelegProxy","2");
 
-  TList *list = new TList(); 
+  TList *list = new TList();
   //list->Add(new TNamed("ALIROOT_EXTRA_LIBS", "ANALYSIS:ANALYSISalice"));  // normally not needed, only used in special cases
   list->Add(new TNamed("ALIROOT_ENABLE_ALIEN", "1"));  // important: creates token on every PROOF worker
 
@@ -64,10 +64,10 @@ void RunPoD(
   outputFileName.Form("AnalysisResults_run%09d.root", runNumber);
   AliAnalysisTaskSimplePt *simplePtTask = AddTaskSimplePt(usePhysicsSelection, outputFileName);
 
-  /*if (usePhysicsSelection) { //not needed since simplePtTask is using AliMuonEventCuts 
+  /*if (usePhysicsSelection) { //not needed since simplePtTask is using AliMuonEventCuts
     simplePtTask->SelectCollisionCandidates(AliVEvent::kAny);
     }*/
- 
+
   if (!mgr->InitAnalysis()) return;
 
   mgr->StartAnalysis("proof", datasetWithRun, numEvents, firstEvent);
