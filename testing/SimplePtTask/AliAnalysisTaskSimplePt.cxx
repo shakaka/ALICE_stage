@@ -357,8 +357,6 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       if(track1->Charge()*track2->Charge()==1) continue;
 
-      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2)
-
       Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
       TLorentzVector lvMuon1, lvMuon2,lvDimuon;
       Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
@@ -370,15 +368,14 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       Short_t chDiMu = track1->Charge()*track2->Charge();
 
 
-      Double_t zvMu1 = track2->Zv();
-      Double_t zvMu2 = track3->Zv();
+      Double_t zvMu1 = track1->Zv();
+      Double_t zvMu2 = track2->Zv();
       Double_t disDiMu = zvMu1-zvMu2;
 
-      Double_t ptDiMu = dimu->Pt();
+      Double_t ptDiMu = lvDimuon.Pt();
       Double_t mDiMu = lvDimuon.M();
-      Double_t yDiMu = dimu->Y();
-      Double_t phiDiMu = dimu->Phi();
-
+      Double_t yDiMu = lvDimuon.Y(); //wrong
+      Double_t phiDiMu = lvDimuon.Phi();
 
       ( (TH1F*)fOutput->UncheckedAt(kDimuonPt) )->Fill(ptDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuM) )->Fill(mDiMu);
@@ -461,8 +458,8 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
     ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
     ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chMu);
-  }
-  */
+  }*/
+
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);
   PostData(2, fEventCounters);
