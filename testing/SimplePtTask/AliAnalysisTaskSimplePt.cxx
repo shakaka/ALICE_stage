@@ -355,8 +355,40 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       }
       if ( ! fMuonTrackCuts->IsSelected(track2) ) continue;
 
-      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2);
-      fOutput->AddLast(dimu);
+      if(track1->Charge()*track2->Charge()==1) continue;
+
+      AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2)
+
+      Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
+      TLorentzVector lvMuon1, lvMuon2,lvDimuon;
+      Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
+      lvMuon1.SetPxPyPzE(track1->Px(),track1->Py(),track1->Pz(),energy);
+      Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
+      lvMuon2.SetPxPyPzE(track2->Px(),track2->Py(),track2->Pz(),energy2);
+      lvDimuon = lvMuon1 + lvMuon2;
+
+      Short_t chDiMu = track1->Charge()*track2->Charge();
+
+
+      Double_t zvMu1 = track2->Zv();
+      Double_t zvMu2 = track3->Zv();
+      Double_t disDiMu = zvMu1-zvMu2;
+
+      Double_t ptDiMu = dimu->Pt();
+      Double_t mDiMu = lvDimuon.M();
+      Double_t yDiMu = dimu->Y();
+      Double_t phiDiMu = dimu->Phi();
+
+
+      ( (TH1F*)fOutput->UncheckedAt(kDimuonPt) )->Fill(ptDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuM) )->Fill(mDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuY) )->Fill(yDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chDiMu);
+
+
+
     }
 
   }
@@ -366,6 +398,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
 
   // Loop over Dimuons
+  /*
   for ( Int_t iDimuon = 0; iDimuon < fOutput->GetEntries()-12; iDimuon++) {
 
     AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>( fOutput->At(iDimuon+12) );
@@ -429,7 +462,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
     ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chMu);
   }
-
+  */
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);
   PostData(2, fEventCounters);
