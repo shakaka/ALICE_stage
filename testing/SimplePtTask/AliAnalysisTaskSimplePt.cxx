@@ -355,7 +355,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       if ( ! fMuonTrackCuts->IsSelected(track2) ) continue;
 
       AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>(track1, track2);
-      dimuAODObj->Add(dimu);
+      dimuAODObj->AddAtAndExpand(dimu, 0);
 
     }
 
