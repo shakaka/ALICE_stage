@@ -23,16 +23,16 @@ class AliAnalysisTaskSimplePt : public AliAnalysisTaskSE {
     virtual void UserCreateOutputObjects();
     virtual void UserExec(Option_t *option);
     virtual void Terminate(Option_t *);
-    
+
     /// Get track cuts
     AliMuonTrackCuts* GetTrackCuts() { return fMuonTrackCuts; }
     /// Get event cuts
     AliMuonEventCuts* GetEventCuts() { return fMuonEventCuts;}
-    
 
-    
+
+
  private:
-    
+
     //AliAnalysisTaskSimplePt(const AliAnalysisTaskSimplePt&);
     // AliAnalysisTaskSimplePt& operator=(const AliAnalysisTaskSimplePt&);
 
@@ -56,7 +56,7 @@ class AliAnalysisTaskSimplePt : public AliAnalysisTaskSE {
     AliMuonEventCuts *fMuonEventCuts; //< Event cuts
     AliMuonTrackCuts *fMuonTrackCuts; //< Track cuts
     TObjArray *fOutput;               //!< List of histograms for data
-    
+
     AliCounterCollection *fEventCounters; //!< Event statistics
 
     ClassDef(AliAnalysisTaskSimplePt, 1);
