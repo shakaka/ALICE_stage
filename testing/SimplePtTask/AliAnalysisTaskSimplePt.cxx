@@ -358,7 +358,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       if(track1->Charge()*track2->Charge()==1) continue;
 
       Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
-      TLorentzVector lvMuon1, lvMuon2,lvDimuon;
+      TLorentzVector lvMuon1, lvMuon2, lvDimuon;
       Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
       lvMuon1.SetPxPyPzE(track1->Px(),track1->Py(),track1->Pz(),energy);
       Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
@@ -374,7 +374,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       Double_t ptDiMu = lvDimuon.Pt();
       Double_t mDiMu = lvDimuon.M();
-      Double_t yDiMu = lvDimuon.Y(); //wrong
+      Double_t yDiMu = TMath::Log((lvDimuon.E()+lvDimuon.Pl())/(lvDimuon.E()-lvDimuon.Pl()))/2
       Double_t phiDiMu = lvDimuon.Phi();
 
       ( (TH1F*)fOutput->UncheckedAt(kDimuonPt) )->Fill(ptDiMu);
