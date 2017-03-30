@@ -368,7 +368,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
   // Loop over Dimuons
   for ( Int_t iDimuon = 0; iDimuon < dimuAODObj->GetEntries(); iDimuon++) {
 
-    AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>( dimuAODObj[iDimuon] );
+    AliAODDimuon *dimu = dynamic_cast<AliAODDimuon*>( dimuAODObj->At(iDimuon) );
 
 
     Bool_t isMuSelected[2] = {kFALSE,kFALSE};
