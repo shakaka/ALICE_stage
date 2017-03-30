@@ -183,7 +183,7 @@ void AliAnalysisTaskSimplePt::UserCreateOutputObjects(){
 
 
   // dimuon Y distribution
-  TH1F *hDiMuY = new TH1F("hDiMuY", "dimuon Y Distribution", 200, -5, 0);
+  TH1F *hDiMuY = new TH1F("hDiMuY", "dimuon Y Distribution", 200, 0, 5);
   hDiMuY->Sumw2();
   fOutput->AddAtAndExpand( hDiMuY, kDiMuY );
 
@@ -365,6 +365,9 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       lvMuon2.SetPxPyPzE(track2->Px(),track2->Py(),track2->Pz(),energy2);
       lvDimuon = lvMuon1 + lvMuon2;
 
+      Double_t plDiMu = TMath::Sqrt(lvDimuon.P()*lvDimuon.P()-lvDimuon.Pt()*lvDimuon.Pt());
+
+
       Short_t chDiMu = track1->Charge()*track2->Charge();
 
 
@@ -374,7 +377,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       Double_t ptDiMu = lvDimuon.Pt();
       Double_t mDiMu = lvDimuon.M();
-      Double_t yDiMu = TMath::Log((lvDimuon.E()+lvDimuon.Pl())/(lvDimuon.E()-lvDimuon.Pl()))/2
+      Double_t yDiMu = TMath::Log((lvDimuon.E()+plDiMu)/(lvDimuon.E()-plDiMu))/2;
       Double_t phiDiMu = lvDimuon.Phi();
 
       ( (TH1F*)fOutput->UncheckedAt(kDimuonPt) )->Fill(ptDiMu);
