@@ -345,6 +345,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       continue;
     }
     if ( ! fMuonTrackCuts->IsSelected(track1) ) continue;
+    ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(track1->Charge());
 
     for (Int_t jTrack = iTrack+1; jTrack < nTracks; jTrack++) {
       AliAODTrack *track2 = (AliAODTrack*) fAODEvent->GetTrack(jTrack);
@@ -368,7 +369,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       Double_t plDiMu = TMath::Sqrt(lvDimuon.P()*lvDimuon.P()-lvDimuon.Pt()*lvDimuon.Pt());
 
 
-      Short_t chDiMu = track1->Charge()*track2->Charge();
+      //Int_t chDiMu = track1->Charge()*track2->Charge();
 
 
       Double_t zvMu1 = track1->Zv();
@@ -385,7 +386,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       ( (TH1F*)fOutput->UncheckedAt(kDiMuY) )->Fill(yDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
-      ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chDiMu);
+
 
 
 
