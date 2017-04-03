@@ -14,7 +14,7 @@ TChain* CreateChainFromAODFile(const char *rootfile,Bool_t isESD);
 TChain* CreateChainFromESDList(const char *esdList);
 TChain* CreateChain(TString inputFileName,Bool_t isESD);
 
-void RunLocal(TString inputFileName = "AliAOD.root", Int_t nEvents = 1e6, Bool_t isESD = kFALSE, Bool_t isMC = kFALSE, Int_t debugLevel = 0)
+void RunLocalCharge(TString inputFileName = "AliAOD.root", Int_t nEvents = 1e6, Bool_t isESD = kFALSE, Bool_t isMC = kFALSE, Int_t debugLevel = 0)
 {
 
   TStopwatch timer;
@@ -102,7 +102,7 @@ void RunLocal(TString inputFileName = "AliAOD.root", Int_t nEvents = 1e6, Bool_t
   // Compile task and add it to the analysis
   gROOT->LoadMacro("AliAnalysisMuonsCharge.cxx+g");
   gROOT->LoadMacro("AddTaskMuonsCharge.C");
-  AliAnalysisTaskSimplePt* task = AddTaskSimplePt(kTRUE,"testMuonCharge.root");
+  AliAnalysisMuonsCharge* task = AddTaskMuonsCharge(kTRUE,"testMuonCharge.root");
   if (!task) {
     Error("runAnalysis","AliAnalysisMuonsCharge not created!");
     return;

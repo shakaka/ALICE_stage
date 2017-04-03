@@ -33,12 +33,12 @@
 #include "AliMuonEventCuts.h"
 #include "AliMuonTrackCuts.h"
 
-#include "AliAnalysisTaskSimplePt.h"
+#include "AliAnalysisMuonsCharge.h"
 
 using std::cout;
 using std::endl;
 
-ClassImp(AliAnalysisTaskSimplePt);
+ClassImp(AliAnalysisMuonsCharge);
 
 //__________________________________________________________________________
 AliAnalysisMuonsCharge::AliAnalysisMuonsCharge() :
@@ -183,8 +183,11 @@ void AliAnalysisMuonsCharge::UserExec(Option_t *)
 
   //keep only selected events
   if ( !keepEvent ) return;
-  }
+
   //Loop to match up Dimouns
+  Int_t nTracks = 0;
+  nTracks = fAODEvent->GetNumberOfTracks();
+  
   for (Int_t iTrack = 0; iTrack < nTracks; iTrack++) {
 
     AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(iTrack);
