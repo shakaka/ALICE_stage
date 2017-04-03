@@ -356,8 +356,11 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       }
       if ( ! fMuonTrackCuts->IsSelected(track2) ) continue;
 
+      Int_t chDiMu = track1->Charge()*track2->Charge();
 
-      if(!(track1->Charge()*track2->Charge())==-1) continue;
+      if(!(chDiMu==-1)) continue;
+
+      AliError(Form("charge is =  %d", chDiMu));
 
       Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
       TLorentzVector lvMuon1, lvMuon2, lvDimuon;
@@ -369,8 +372,6 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
 
       Double_t plDiMu = TMath::Sqrt(lvDimuon.P()*lvDimuon.P()-lvDimuon.Pt()*lvDimuon.Pt());
 
-
-      Int_t chDiMu = track1->Charge()*track2->Charge();
 
 
       Double_t zvMu1 = track1->Zv();
@@ -388,6 +389,8 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chDiMu);
+      
+
 
 
 
