@@ -129,34 +129,9 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   fOutput->SetOwner();
 
   // Dimuon Charge distribution
-  TH1F *hDiMuCh= new TH1F("hDiMuCh", "Dimuon Charge Distribution", 200, -2, 2);
-  hDiMuCh->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuCh, kDiMuCh );
-
-  // Dimuon pt Distribution
-  TH1F *hDiMuPt = new TH1F("hDiMuPt", "Dimuon pt Distribution", 200, 0, 10);
-  hDiMuPt->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuPt, kDiMuPt );
-
-  // Dimuon Y distribution
-  TH1F *hDiMuY = new TH1F("hDiMuY", "Dimuon Y Distribution", 200, 0, 5);
-  hDiMuY->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuY, kDiMuY );
-
-  // Dimuon Phi distribution
-  TH1F *hDiMuPhi = new TH1F("hDiMuPhi", "Dimuon Phi Distribution", 200, 0, 7);
-  hDiMuPhi->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuPhi, kDiMuPhi );
-
-  // Dimuon M distribution
-  TH1F *hDiMuM = new TH1F("hDiMuM", "Dimuon M Distribution", 200, 0, 5);
-  hDiMuM->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuM, kDiMuM );
-
-  // Dimuon zv distance distribution
-  TH1F *hDiMuZv= new TH1F("hDiMuZv", "Dimuon zv distance Distribution", 200, -0.5, 0.5);
-  hDiMuZv->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuZv, kDiMuZv );
+  TH2F *hDbJpsi= new TH2F("hDbJpsi", "Double Jpsi invariant mass Distribution", 200, 2, 5, 200, 2, 5);
+  hDbJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hDbJpsi, kDbJpsi );
 
   // initialize event counters
   fEventCounters = new AliCounterCollection("eventCounters");
@@ -208,9 +183,11 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
   //keep only selected events
   if ( !keepEvent ) return;
-  AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
-  Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
-  if(centralityFromV0 > 90) return;
+  // AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
+  // Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
+  // if(centralityFromV0 > 90) return;
+
+
   //Loop to match up Dimouns
   Int_t nTracks = 0;
   nTracks = fAODEvent->GetNumberOfTracks();
@@ -237,7 +214,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
       for (Int_t lTrack = jTrack+1; lTrack < nTracks; lTrack++) {
         AliAODTrack *track3 = (AliAODTrack*) fAODEvent->GetTrack(lTrack);
-        if (!track4) {
+        if (!track3) {
           AliError(Form("ERROR: Could not retrieve track3 %d", lTrack));
           continue;
         }
@@ -248,7 +225,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
         for (Int_t oTrack = lTrack+1; oTrack < nTracks; oTrack++) {
           AliAODTrack *track4 = (AliAODTrack*) fAODEvent->GetTrack(oTrack);
           if (!track4) {
-            AliError(Form("ERROR: Could not retrieve track4 %d", iorack));
+            AliError(Form("ERROR: Could not retrieve track4 %d", oTrack));
             continue;
           }
           if ( ! fMuonTrackCuts->IsSelected(track4) ) continue;
@@ -273,8 +250,11 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon2= lvMuon3 + lvMuon4;
 
               //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu1 = lvDimuon.M();
               Double_t maDiMu2 = lvDimuon2.M();
+
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
             }
           }
           //Choose 13, 24
@@ -285,8 +265,11 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon2= lvMuon2 + lvMuon4;
 
               //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu1 = lvDimuon.M();
               Double_t maDiMu2 = lvDimuon2.M();
+
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
             }
           }
           //Choose 14,23
@@ -297,8 +280,11 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon2= lvMuon2 + lvMuon3;
 
               //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu1 = lvDimuon.M();
               Double_t maDiMu2 = lvDimuon2.M();
+
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
             }
           }
 
@@ -307,8 +293,18 @@ void AliDoubleJpsi::UserExec(Option_t *)
       }
     }
   }
+  TH1D *hBin1 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.06 GeV", 66, 70);
+  TH1D *hBin2 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.12 GeV", 74, 78);
+  TH1D *hBin3 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.18 GeV", 82, 86);
+  TH1D *hBin4 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.24 GeV", 90, 94);
+  TH1D *hBin5 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.3 GeV", 98, 102);
 
-  }
+
+  fOutput->AddAtAndExpand( hBin1, kBin1 );
+  fOutput->AddAtAndExpand( hBin2, kBin2 );
+  fOutput->AddAtAndExpand( hBin3, kBin3 );
+  fOutput->AddAtAndExpand( hBin4, kBin4 );
+  fOutput->AddAtAndExpand( hBin5, kBin5 );
 
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);

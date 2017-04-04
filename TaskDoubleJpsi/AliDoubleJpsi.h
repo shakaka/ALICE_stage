@@ -37,12 +37,12 @@ class AliDoubleJpsi : public AliAnalysisTaskSE {
     // AliAnalysisTaskSimplePt& operator=(const AliAnalysisTaskSimplePt&);
 
     enum eList {
-      kDiMuPt = 0, ///< dimuon pt
-      kDiMuY = 1,
-      kDiMuPhi = 2,
-      kDiMuM = 3,
-      kDiMuZv = 4,
-      kDiMuCh = 5
+      kDbJpsi = 0,
+      kBin1 = 1,
+      kBin2 = 2,
+      kBin3 = 3,
+      kBin4 = 4,
+      kBin5 = 5
     };
 
     AliAODEvent* fAODEvent;       // AOD event
