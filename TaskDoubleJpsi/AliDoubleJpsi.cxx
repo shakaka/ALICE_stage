@@ -26,6 +26,7 @@
 #include "AliAnalysisManager.h"
 #include "AliAnalysisTaskSE.h"
 #include "AliCounterCollection.h"
+#include "AliMultSelection.h"
 
 
 
@@ -207,7 +208,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
   //keep only selected events
   if ( !keepEvent ) return;
-
+  AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
+  Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
+  if(centralityFromV0 > 90) return;
   //Loop to match up Dimouns
   Int_t nTracks = 0;
   nTracks = fAODEvent->GetNumberOfTracks();
@@ -250,8 +253,54 @@ void AliDoubleJpsi::UserExec(Option_t *)
           }
           if ( ! fMuonTrackCuts->IsSelected(track4) ) continue;
 
+          Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
+          TLorentzVector lvMuon1, lvMuon2, lvDimuon, lvMuon3, lvMuon4, lvDimuon2;
 
+          Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
+          Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
+          Float_t energy3 = TMath::Sqrt(track3->P()*track3->P() + muonMass2);
+          Float_t energy4 = TMath::Sqrt(track4->P()*track4->P() + muonMass2);
 
+          lvMuon1.SetPxPyPzE(track1->Px(),track1->Py(),track1->Pz(),energy);
+          lvMuon2.SetPxPyPzE(track2->Px(),track2->Py(),track2->Pz(),energy2);
+          lvMuon3.SetPxPyPzE(track3->Px(),track3->Py(),track3->Pz(),energy3);
+          lvMuon4.SetPxPyPzE(track4->Px(),track4->Py(),track4->Pz(),energy4);
+          //Choose 12, 34
+          if(track1->Charge()*track2->Charge()==-1){
+            if (track3->Charge()*track4->Charge()==-1){
+              //Building Lorentz vetors
+              lvDimuon = lvMuon1 + lvMuon2;
+              lvDimuon2= lvMuon3 + lvMuon4;
+
+              //Getting invariant mass
+              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu2 = lvDimuon2.M();
+            }
+          }
+          //Choose 13, 24
+          if(track1->Charge()*track3->Charge()==-1){
+            if (track2->Charge()*track4->Charge()==-1){
+              //Building Lorentz vetors
+              lvDimuon = lvMuon1 + lvMuon3;
+              lvDimuon2= lvMuon2 + lvMuon4;
+
+              //Getting invariant mass
+              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu2 = lvDimuon2.M();
+            }
+          }
+          //Choose 14,23
+          if(track1->Charge()*track4->Charge()==-1){
+            if (track2->Charge()*track3->Charge()==-1){
+              //Building Lorentz vetors
+              lvDimuon = lvMuon1 + lvMuon4;
+              lvDimuon2= lvMuon2 + lvMuon3;
+
+              //Getting invariant mass
+              Double_t maDiMu1 = lvDimuon1.M();
+              Double_t maDiMu2 = lvDimuon2.M();
+            }
+          }
 
 
         }
