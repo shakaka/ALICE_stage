@@ -379,17 +379,17 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
       Double_t disDiMu = zvMu1-zvMu2;
 
       Double_t ptDiMu = lvDimuon.Pt();
-      Double_t mDiMu = lvDimuon.M();
+      Double_t maDiMu = lvDimuon.M();
       Double_t yDiMu = TMath::Log((lvDimuon.E()+plDiMu)/(lvDimuon.E()-plDiMu))/2;
       Double_t phiDiMu = lvDimuon.Phi();
 
       ( (TH1F*)fOutput->UncheckedAt(kDimuonPt) )->Fill(ptDiMu);
-      ( (TH1F*)fOutput->UncheckedAt(kDiMuM) )->Fill(mDiMu);
+      ( (TH1F*)fOutput->UncheckedAt(kDiMuM) )->Fill(maDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuY) )->Fill(yDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuCh) )->Fill(chDiMu);
-      
+
 
 
 
@@ -455,7 +455,7 @@ void AliAnalysisTaskSimplePt::UserExec(Option_t *)
     Double_t disDiMu = zvMu1-zvMu2;
 
     Double_t ptDiMu = dimu->Pt();
-    Double_t mDiMu = lvDimuon.M();
+    Double_t `mDiMu` = lvDimuon.M();
     Double_t yDiMu = dimu->Y();
     Double_t phiDiMu = dimu->Phi();
 
