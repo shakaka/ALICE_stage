@@ -183,9 +183,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
   //keep only selected events
   if ( !keepEvent ) return;
-  // AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
-  // Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
-  // if(centralityFromV0 > 90) return;
+  AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
+  Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
+  if(centralityFromV0 > 90) return;
 
 
   //Loop to match up Dimouns
@@ -255,6 +255,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              // }else{
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              // }
             }
           }
           //Choose 13, 24
@@ -270,6 +276,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              // }else{
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              // }
             }
           }
           //Choose 14,23
@@ -285,6 +297,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
               ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              // }else{
+              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              // }
             }
           }
 
@@ -293,18 +311,10 @@ void AliDoubleJpsi::UserExec(Option_t *)
       }
     }
   }
-  TH1D *hBin1 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.06 GeV", 66, 70);
-  TH1D *hBin2 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.12 GeV", 74, 78);
-  TH1D *hBin3 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.18 GeV", 82, 86);
-  TH1D *hBin4 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.24 GeV", 90, 94);
-  TH1D *hBin5 = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("till 3.3 GeV", 98, 102);
-
-
-  fOutput->AddAtAndExpand( hBin1, kBin1 );
-  fOutput->AddAtAndExpand( hBin2, kBin2 );
-  fOutput->AddAtAndExpand( hBin3, kBin3 );
-  fOutput->AddAtAndExpand( hBin4, kBin4 );
-  fOutput->AddAtAndExpand( hBin5, kBin5 );
+  TH1D *hProjX = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("Projection to X");
+  TH1D *hProjY = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionY("Projection to Y");
+  fOutput->AddAtAndExpand( hProjX, kProjX );
+  fOutput->AddAtAndExpand( hProjY, kProjY );
 
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);

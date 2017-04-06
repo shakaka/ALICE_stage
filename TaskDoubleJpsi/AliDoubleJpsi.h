@@ -38,11 +38,8 @@ class AliDoubleJpsi : public AliAnalysisTaskSE {
 
     enum eList {
       kDbJpsi = 0,
-      kBin1 = 1,
-      kBin2 = 2,
-      kBin3 = 3,
-      kBin4 = 4,
-      kBin5 = 5
+      kProjX = 1,
+      kProjY = 2
     };
 
     AliAODEvent* fAODEvent;       // AOD event

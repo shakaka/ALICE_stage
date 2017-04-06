@@ -41,7 +41,7 @@ class AliAnalysisJpsi : public AliAnalysisTaskSE {
       kDiMuY = 1,
       kDiMuPhi = 2,
       kDiMuM = 3,
-      kDiMuZv = 4,
+      kEvCen = 4,
       kDiMuCh = 5
     };
 

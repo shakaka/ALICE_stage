@@ -26,6 +26,7 @@
 #include "AliAnalysisManager.h"
 #include "AliAnalysisTaskSE.h"
 #include "AliCounterCollection.h"
+#include "AliMultSelection.h"
 
 
 
@@ -148,14 +149,14 @@ void AliAnalysisJpsi::UserCreateOutputObjects(){
   fOutput->AddAtAndExpand( hDiMuPhi, kDiMuPhi );
 
   // Dimuon M distribution
-  TH1F *hDiMuM = new TH1F("hDiMuM", "Dimuon M Distribution", 200, 0, 5);
+  TH1F *hDiMuM = new TH1F("hDiMuM", "Dimuon M Distribution", 200, 2, 5);
   hDiMuM->Sumw2();
   fOutput->AddAtAndExpand( hDiMuM, kDiMuM );
 
-  // Dimuon zv distance distribution
-  TH1F *hDiMuZv= new TH1F("hDiMuZv", "Dimuon zv distance Distribution", 200, -0.5, 0.5);
-  hDiMuZv->Sumw2();
-  fOutput->AddAtAndExpand( hDiMuZv, kDiMuZv );
+  // Event centrality distribution
+  TH1F *hEvCen= new TH1F("hEvCen", "Event centrality distribution", 200, 0, 100);
+  hEvCen->Sumw2();
+  fOutput->AddAtAndExpand( hEvCen, kEvCen );
 
   // initialize event counters
   fEventCounters = new AliCounterCollection("eventCounters");
@@ -207,6 +208,11 @@ void AliAnalysisJpsi::UserExec(Option_t *)
 
   //keep only selected events
   if ( !keepEvent ) return;
+  AliMultSelection *multSelection = (AliMultSelection * ) fAODEvent->FindListObject("MultSelection");
+  Double_t centralityFromV0 = multSelection->GetMultiplicityPercentile("V0M", false);
+  if(centralityFromV0 > 90) return;
+
+  ( (TH1F*)fOutput->UncheckedAt(kEvCen) )->Fill( centralityFromV0 );
 
   //Loop to match up Dimouns
   Int_t nTracks = 0;
@@ -274,7 +280,6 @@ void AliAnalysisJpsi::UserExec(Option_t *)
       ( (TH1F*)fOutput->UncheckedAt(kDiMuM) )->Fill(maDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuY) )->Fill(yDiMu);
       ( (TH1F*)fOutput->UncheckedAt(kDiMuPhi) )->Fill(phiDiMu);
-      ( (TH1F*)fOutput->UncheckedAt(kDiMuZv) )->Fill(disDiMu);
 
 
     }

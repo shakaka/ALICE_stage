@@ -158,6 +158,9 @@
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliRoot/v5-09-01-1/include/AliAnalysisTask.h
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/ROOT/v5-34-30-alice7-2/include/TTask.h
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliRoot/v5-09-01-1/include/AliCounterCollection.h
+./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliPhysics/vAN-20170326-1/include/AliMultSelection.h
+./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliRoot/v5-09-01-1/include/AliMultSelectionBase.h
+./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliPhysics/vAN-20170326-1/include/AliMultEstimator.h
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliPhysics/vAN-20170326-1/include/AliMuonEventCuts.h
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliRoot/v5-09-01-1/include/AliAnalysisCuts.h
 ./AliAnalysisJpsi_cxx.so: /cvmfs/alice.cern.ch/x86_64-2.6-gnu-4.1.2/Packages/AliRoot/v5-09-01-1/include/AliVCuts.h
