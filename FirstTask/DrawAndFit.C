@@ -115,8 +115,7 @@ Double_t varGausCB(Double_t *x, Double_t *par) {
 
 
 void DrawAndFit( TString fileName ="AliConbined.root" ){
-  //testSimplePtMuonTask.root
-  //AnalysisResults_run000245346.root
+
   TFile *file = TFile::Open( fileName.Data() );
 
   //get counters
@@ -143,41 +142,6 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   TH1F *hEvCen = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hEvCen") );
   TH1F *hDiMuCh = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hDiMuCh") );
 
-  //Fitting
-  // TF1 *fitFcnEG = new TF1("fitFcnEG",expGaus,2,5,5);
-  // fitFcnEG->SetParNames("a", "b", "Ns", "miuS", "sigma");
-  // fitFcnEG->SetParameters(1,-1,1,3.09,0.07);
-  // fitFcnEG->SetRange(2, 5);
-  //
-  //
-  // TF1 *fitFcnPG = new TF1("fitFcnPG",mpolGaus,2,5,6);
-  // fitFcnPG->SetParNames("p0", "p1", "p2", "Ns", "miuS", "sigma");
-  // fitFcnPG->SetParameters(1000,-430,44,1,3.09,0.07);
-  // fitFcnPG->SetRange(2, 5);
-  //
-  // TF1 *fitFcnVG = new TF1("fitFcnVG",varGausGaus,2,5,7);
-  // fitFcnVG->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma");
-  // fitFcnVG->SetParameters(500,1,1,1, 1, 3.09, 0.07);
-  // // fitFcnVG->SetParLimits(0, 500,501);
-  // // fitFcnVG->SetParLimits(1, 0, 1);
-  // // fitFcnVG->SetParLimits(2, 1, 2);
-  // // fitFcnVG->SetParLimits(3, 0, 1);
-  // // fitFcnVG->SetParLimits(5, 3, 3.2);
-  // // fitFcnVG->SetParLimits(6, 0, 1);
-  // fitFcnVG->SetRange(2, 5);
-
-
-
-  // TF1 *fitFcnEC = new TF1("fitFcnEC",expCB,2,5,9);
-  // fitFcnEC->SetParNames("a", "b", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  // fitFcnEC->SetParameters(1,1,25000,3.09,0.07,0.97,3.98,2.3,3.03);
-  // fitFcnEC->FixParameter(5, 1.06);
-  // fitFcnEC->FixParameter(6, 3.23);
-  // fitFcnEC->FixParameter(7, 2.55);
-  // fitFcnEC->FixParameter(8, 1.56);
-  // fitFcnEC->SetRange(2, 5);
-  //
-  //
   TF1 *fitFcnPC = new TF1("fitFcnPC",polCB,2,5,14);
   fitFcnPC->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
   fitFcnPC->SetParName(11,  "nL");
@@ -187,10 +151,22 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fitFcnPC->SetParameter(11, 3.98);
   fitFcnPC->SetParameter(12, 2.3);
   fitFcnPC->SetParameter(13, 3.03);
-  fitFcnPC->FixParameter(10, 1.06);
-  fitFcnPC->FixParameter(11, 3.23);
-  fitFcnPC->FixParameter(12, 2.55);
-  fitFcnPC->FixParameter(13, 1.56);
+
+  //GEANT4 1.06,3.23,2.55,1.56
+  // fitFcnPC->FixParameter(7, 1.06);
+  // fitFcnPC->FixParameter(8, 3.23);
+  // fitFcnPC->FixParameter(9, 2.55);
+  // fitFcnPC->FixParameter(10, 1.56);
+  //GEANT3 0.97,3.98,2.3,3.03
+  // fitFcnPC->FixParameter(7, 0.97);
+  // fitFcnPC->FixParameter(8, 3.98);
+  // fitFcnPC->FixParameter(9, 2.3);
+  // fitFcnPC->FixParameter(10, 3.03);
+  // //pp13TeV0.98,6.97,1.86,14.99
+  fitFcnPC->FixParameter(7, 0.98);
+  fitFcnPC->FixParameter(8, 6.97);
+  fitFcnPC->FixParameter(9, 1.86);
+  fitFcnPC->FixParameter(10, 14.99);
   fitFcnPC->SetRange(2, 5);
 
 
