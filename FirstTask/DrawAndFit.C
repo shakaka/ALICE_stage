@@ -142,58 +142,159 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   TH1F *hEvCen = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hEvCen") );
   TH1F *hDiMuCh = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hDiMuCh") );
 
-  TF1 *fitFcnPC = new TF1("fitFcnPC",polCB,2,5,14);
-  fitFcnPC->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
-  fitFcnPC->SetParName(11,  "nL");
-  fitFcnPC->SetParName(12, "alphaR");
-  fitFcnPC->SetParName(13, "nR");
-  fitFcnPC->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
-  fitFcnPC->SetParameter(11, 3.98);
-  fitFcnPC->SetParameter(12, 2.3);
-  fitFcnPC->SetParameter(13, 3.03);
 
+//Function for polinominal and CB2
+
+//2.2~4.5
   //GEANT4 1.06,3.23,2.55,1.56
-  // fitFcnPC->FixParameter(7, 1.06);
-  // fitFcnPC->FixParameter(8, 3.23);
-  // fitFcnPC->FixParameter(9, 2.55);
-  // fitFcnPC->FixParameter(10, 1.56);
+  TF1 *fit25FcnPC4 = new TF1("fitFcnPC",polCB,2,5,14);
+  fit25FcnPC4->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit25FcnPC4->SetParName(11,  "nL");
+  fit25FcnPC4->SetParName(12, "alphaR");
+  fit25FcnPC4->SetParName(13, "nR");
+  fit25FcnPC4->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit25FcnPC4->FixParameter(10, 1.06);
+  fit25FcnPC4->FixParameter(11, 3.23);
+  fit25FcnPC4->FixParameter(12, 2.55);
+  fit25FcnPC4->FixParameter(13, 1.56);
+  fit25FcnPC4->SetRange(2.2, 4.5);
+
   //GEANT3 0.97,3.98,2.3,3.03
-  // fitFcnPC->FixParameter(7, 0.97);
-  // fitFcnPC->FixParameter(8, 3.98);
-  // fitFcnPC->FixParameter(9, 2.3);
-  // fitFcnPC->FixParameter(10, 3.03);
-  // //pp13TeV0.98,6.97,1.86,14.99
-  fitFcnPC->FixParameter(7, 0.98);
-  fitFcnPC->FixParameter(8, 6.97);
-  fitFcnPC->FixParameter(9, 1.86);
-  fitFcnPC->FixParameter(10, 14.99);
-  fitFcnPC->SetRange(2, 5);
-
-
-
+  TF1 *fit25FcnPC3 = new TF1("fitFcnPC",polCB,2,5,14);
+  fit25FcnPC3->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit25FcnPC3->SetParName(11,  "nL");
+  fit25FcnPC3->SetParName(12, "alphaR");
+  fit25FcnPC3->SetParName(13, "nR");
+  fit25FcnPC3->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit25FcnPC3->FixParameter(10, 0.97);
+  fit25FcnPC3->FixParameter(11, 3.98);
+  fit25FcnPC3->FixParameter(12, 2.3);
+  fit25FcnPC3->FixParameter(13, 3.03);
+  fit25FcnPC3s->SetRange(2.2, 4.5);
 
   //pp13TeV0.98,6.97,1.86,14.99
+  TF1 *fit25FcnPCpp = new TF1("fitFcnPC",polCB,2,5,14);
+  fit25FcnPCpp->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit25FcnPCpp->SetParName(11,  "nL");
+  fit25FcnPCpp->SetParName(12, "alphaR");
+  fit25FcnPCpp->SetParName(13, "nR");
+  fit25FcnPCpp->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit25FcnPCpp->FixParameter(10, 0.98);
+  fit25FcnPCpp->FixParameter(11, 6.97);
+  fit25FcnPCpp->FixParameter(12, 1.86);
+  fit25FcnPCpp->FixParameter(13, 14.99);
+  fit25FcnPCpp->SetRange(2.2, 4.5);
 
-  TF1 *fitFcnVC = new TF1("fitFcnVC",varGausCB,2,5,11);
-  fitFcnVC->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fitFcnVC->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+//2.4~4.7
   //GEANT4 1.06,3.23,2.55,1.56
-  // fitFcnVC->FixParameter(7, 1.06);
-  // fitFcnVC->FixParameter(8, 3.23);
-  // fitFcnVC->FixParameter(9, 2.55);
-  // fitFcnVC->FixParameter(10, 1.56);
-  //GEANT3 0.97,3.98,2.3,3.03
-  // fitFcnVC->FixParameter(7, 0.97);
-  // fitFcnVC->FixParameter(8, 3.98);
-  // fitFcnVC->FixParameter(9, 2.3);
-  // fitFcnVC->FixParameter(10, 3.03);
-  // //pp13TeV0.98,6.97,1.86,14.99
-  fitFcnVC->FixParameter(7, 0.98);
-  fitFcnVC->FixParameter(8, 6.97);
-  fitFcnVC->FixParameter(9, 1.86);
-  fitFcnVC->FixParameter(10, 14.99);
-  fitFcnVC->SetRange(2, 5);
+  TF1 *fit47FcnPC4 = new TF1("fitFcnPC",polCB,2,5,14);
+  fit47FcnPC4->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit47FcnPC4->SetParName(11,  "nL");
+  fit47FcnPC4->SetParName(12, "alphaR");
+  fit47FcnPC4->SetParName(13, "nR");
+  fit47FcnPC4->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit47FcnPC4->FixParameter(10, 1.06);
+  fit47FcnPC4->FixParameter(11, 3.23);
+  fit47FcnPC4->FixParameter(12, 2.55);
+  fit47FcnPC4->FixParameter(13, 1.56);
+  fit47FcnPC4->SetRange(2.4, 4.7);
 
+  //GEANT3 0.97,3.98,2.3,3.03
+  TF1 *fit47FcnPC3 = new TF1("fitFcnPC",polCB,2,5,14);
+  fit47FcnPC3->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit47FcnPC3->SetParName(11,  "nL");
+  fit47FcnPC3->SetParName(12, "alphaR");
+  fit47FcnPC3->SetParName(13, "nR");
+  fit47FcnPC3->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit47FcnPC3->FixParameter(10, 0.97);
+  fit47FcnPC3->FixParameter(11, 3.98);
+  fit47FcnPC3->FixParameter(12, 2.3);
+  fit47FcnPC3->FixParameter(13, 3.03);
+  fit47FcnPC3s->SetRange(2.4, 4.7);
+
+  //pp13TeV0.98,6.97,1.86,14.99
+  TF1 *fit47FcnPCpp = new TF1("fitFcnPC",polCB,2,5,14);
+  fit47FcnPCpp->SetParNames("p0", "p1", "p2", "p20", "p21", "p22", "p23", "Ns", "miuS", "sigma", "alphaL");
+  fit47FcnPCpp->SetParName(11,  "nL");
+  fit47FcnPCpp->SetParName(12, "alphaR");
+  fit47FcnPCpp->SetParName(13, "nR");
+  fit47FcnPCpp->SetParameters(2700000,-950000,95000,-120,170,-71.2,10.4,25000,3.09,0.07,0.97);
+  fit47FcnPCpp->FixParameter(10, 0.98);
+  fit47FcnPCpp->FixParameter(11, 6.97);
+  fit47FcnPCpp->FixParameter(12, 1.86);
+  fit47FcnPCpp->FixParameter(13, 14.99);
+  fit47FcnPCpp->SetRange(2.4, 4.7);
+
+
+
+//Function for VWG and CB2
+
+
+//2.2~4.5
+  //GEANT4 1.06,3.23,2.55,1.56
+  TF1 *fit25FcnVC4 = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit25FcnVC4->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit25FcnVC4->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVC4->FixParameter(7, 1.06);
+  fit25FcnVC4->FixParameter(8, 3.23);
+  fit25FcnVC4->FixParameter(9, 2.55);
+  fit25FcnVC4->FixParameter(10, 1.56);
+  fit25FcnVC4->SetRange(2.2, 4.5);
+
+  //GEANT3 0.97,3.98,2.3,3.03
+  TF1 *fit25FcnVC3 = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit25FcnVC3->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit25FcnVC3->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVC3->FixParameter(7, 0.97);
+  fit25FcnVC3->FixParameter(8, 3.98);
+  fit25FcnVC3->FixParameter(9, 2.3);
+  fit25FcnVC3->FixParameter(10, 3.03);
+  fit25FcnVC3->SetRange(2.2, 4.5);
+
+  //pp13TeV0.98,6.97,1.86,14.99
+  TF1 *fit25FcnVCpp = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit25FcnVCpp->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit25FcnVCpp->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVCpp->FixParameter(7, 0.98);
+  fit25FcnVCpp->FixParameter(8, 6.97);
+  fit25FcnVCpp->FixParameter(9, 1.86);
+  fit25FcnVCpp->FixParameter(10, 14.99);
+  fit25FcnVCpp->SetRange(2.2, 4.5);
+
+//2.4~4.7
+  //GEANT4 1.06,3.23,2.55,1.56
+  TF1 *fit47FcnVC4 = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit47FcnVC4->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit47FcnVC4->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVC4->FixParameter(7, 1.06);
+  fit47FcnVC4->FixParameter(8, 3.23);
+  fit47FcnVC4->FixParameter(9, 2.55);
+  fit47FcnVC4->FixParameter(10, 1.56);
+  fit47FcnVC4->SetRange(2.4, 4.7);
+
+  //GEANT3 0.97,3.98,2.3,3.03
+  TF1 *fit47FcnVC3 = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit47FcnVC3->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit47FcnVC3->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVC3->FixParameter(7, 0.97);
+  fit47FcnVC3->FixParameter(8, 3.98);
+  fit47FcnVC3->FixParameter(9, 2.3);
+  fit47FcnVC3->FixParameter(10, 3.03);
+  fit47FcnVC3->SetRange(2.4, 4.7);
+
+  //pp13TeV0.98,6.97,1.86,14.99
+  TF1 *fit47FcnVCpp = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fit47FcnVCpp->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
+  fit47FcnVCpp->SetParameters(70000,1.67,-0.7,-0.2, 25000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVCpp->FixParameter(7, 0.98);
+  fit47FcnVCpp->FixParameter(8, 6.97);
+  fit47FcnVCpp->FixParameter(9, 1.86);
+  fit47FcnVCpp->FixParameter(10, 14.99);
+  fit47FcnVCpp->SetRange(2.4, 4.7);
+
+
+
+  // for Background testing
   TF1 *fitBgE = new TF1("fitBgE",varGausCB,2,5,2);
   fitBgE->SetParameters(1, 1);
   fitBgE->SetRange(2, 5);
@@ -230,40 +331,99 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   printf("nJpsipp = %d\n", nJpsipp);
 
 
-  if (hDiMuPt) {
-    new TCanvas();
-    hDiMuPt->Draw();
-  }
-  if (hDiMuY) {
-    new TCanvas();
-    hDiMuY->Draw();
-  }
-  if (hDiMuPhi) {
-    new TCanvas();
-    hDiMuPhi->Draw();
-  }
+  // if (hDiMuPt) {
+  //   new TCanvas();
+  //   hDiMuPt->Draw();
+  // }
+  // if (hDiMuY) {
+  //   new TCanvas();
+  //   hDiMuY->Draw();
+  // }
+  // if (hDiMuPhi) {
+  //   new TCanvas();
+  //   hDiMuPhi->Draw();
+  // }
   if (hDiMuM) {
+
     new TCanvas();
-    gStyle->SetOptFit();
-    // hDiMuM->Fit(fitBgE, "R");
-    // hDiMuM->Fit(fitBgP, "R+");
-    // hDiMuM->Fit(fitBgVWG, "R+");
+    hDiMuM->Fit(fitBgP, "R+");
+    hDiMuM->Fit(fitBgVWG, "R+");
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnPC4, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnVC4, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnPC3, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnVC3, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnPCpp, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit25FcnVCpp, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnPC4, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnVC4, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnPC3, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnVC3, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnPCpp, "R");
+    // hDiMuM->Draw();
+    //
+    // new TCanvas();
+    // gStyle->SetOptFit();
+    // hDiMuM->Fit(fit47FcnVCpp, "R");
+    // hDiMuM->Draw();
+
+
     // hDiMuM->Fit(fitFcnEG, "R");
     // hDiMuM->Fit(fitFcnPG, "R+");
     // hDiMuM->Fit(fitFcnVG, "R+");
     // hDiMuM->Fit(fitFcnEC, "R");
-    hDiMuM->Fit(fitFcnPC, "R+");
-    hDiMuM->Fit(fitFcnVC, "R+");
-    hDiMuM->Draw();
-    CB2pp->Draw("same");
+
+
+    // CB2pp->Draw("same");
   }
-  if (hEvCen) {
-    new TCanvas();
-    hEvCen->Draw();
-  }
-  if (hDiMuCh) {
-    new TCanvas();
-    hDiMuCh->Draw();
-  }
+  // if (hEvCen) {
+  //   new TCanvas();
+  //   hEvCen->Draw();
+  // }
+  // if (hDiMuCh) {
+  //   new TCanvas();
+  //   hDiMuCh->Draw();
+  // }
 
 }
