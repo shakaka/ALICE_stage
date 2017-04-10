@@ -129,9 +129,21 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   fOutput->SetOwner();
 
   // Dimuon Charge distribution
-  TH2F *hDbJpsi= new TH2F("hDbJpsi", "Double Jpsi invariant mass Distribution", 200, 2, 5, 200, 2, 5);
-  hDbJpsi->Sumw2();
-  fOutput->AddAtAndExpand( hDbJpsi, kDbJpsi );
+  TH2F *hMaDbJpsi= new TH2F("hMaDbJpsi", "Double Jpsi invariant mass Distribution", 200, 2, 5, 200, 2, 5);
+  hMaDbJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hMaDbJpsi, kMaDbJpsi );
+
+  TH2F *hPtDbJpsi= new TH2F("hPtDbJpsi", "Double Jpsi Pt Distribution", 200, 0, 10, 200, 0, 10);
+  hPtDbJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hPtDbJpsi, kPtDbJpsi );
+
+  TH2F *hYDbJpsi= new TH2F("hYDbJpsi", "Double Jpsi Y Distribution", 200, 0, 5, 200, 0, 5);
+  hYDbJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hYDbJpsi, kYDbJpsi );
+
+  TH2F *hPhiDbJpsi= new TH2F("hPhiDbJpsi", "Double Jpsi Phi Distribution", 200, 0, 7, 200, 0, 7);
+  hPhiDbJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hPhiDbJpsi, kPhiDbJpsi );
 
   // initialize event counters
   fEventCounters = new AliCounterCollection("eventCounters");
@@ -249,17 +261,10 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon = lvMuon1 + lvMuon2;
               lvDimuon2= lvMuon3 + lvMuon4;
 
-              //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon.M();
-              Double_t maDiMu2 = lvDimuon2.M();
-
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
-
               // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
               // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
               // }
             }
           }
@@ -270,17 +275,10 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon = lvMuon1 + lvMuon3;
               lvDimuon2= lvMuon2 + lvMuon4;
 
-              //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon.M();
-              Double_t maDiMu2 = lvDimuon2.M();
-
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
-
               // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
               // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
               // }
             }
           }
@@ -291,30 +289,46 @@ void AliDoubleJpsi::UserExec(Option_t *)
               lvDimuon = lvMuon1 + lvMuon4;
               lvDimuon2= lvMuon2 + lvMuon3;
 
-              //Getting invariant mass
-              Double_t maDiMu1 = lvDimuon.M();
-              Double_t maDiMu2 = lvDimuon2.M();
-
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
-
               // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu1, maDiMu2);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
               // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->Fill(maDiMu2, maDiMu1);
+              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
               // }
             }
           }
+
+          //Getting data wanted
+          Double_t maDiMu1 = lvDimuon.M();
+          Double_t maDiMu2 = lvDimuon2.M();
+
+          Double_t ptDiMu1 = lvDimuon.Pt();
+          Double_t ptDiMu2 = lvDimuon2.Pt();
+
+          Double_t phiDiMu1 = lvDimuon.Phi();
+          Double_t phiDiMu2 = lvDimuon2.Phi();
+
+          Double_t plDiMu1 = TMath::Sqrt((lvDimuon.P()*lvDimuon.P())-(lvDimuon.Pt()*lvDimuon.Pt()));
+          Double_t plDiMu2 = TMath::Sqrt((lvDimuon2.P()*lvDimuon2.P())-(lvDimuon2.Pt()*lvDimuon2.Pt()));
+          Double_t yDiMu1 = TMath::Log((lvDimuon.E()+plDiMu1)/(lvDimuon.E()-plDiMu1))/2;
+          Double_t yDiMu2 = TMath::Log((lvDimuon2.E()+plDiMu2)/(lvDimuon2.E()-plDiMu2))/2;
+
+          ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
+          ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+          ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu1, ptDiMu2);
+          ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
+
+          ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu1, yDiMu2);
+          ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
+
+          ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu1, phiDiMu2);
+          ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
 
 
         }
       }
     }
   }
-  TH1D *hProjX = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionX("Projection to X");
-  TH1D *hProjY = ( (TH2F*)fOutput->UncheckedAt(kDbJpsi) )->ProjectionY("Projection to Y");
-  fOutput->AddAtAndExpand( hProjX, kProjX );
-  fOutput->AddAtAndExpand( hProjY, kProjY );
 
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);

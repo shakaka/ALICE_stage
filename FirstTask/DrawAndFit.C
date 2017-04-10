@@ -434,7 +434,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
 
 
       //Get parameters
-          fit = myhist[i]->GetFunction((TF1*)araFunc->UncheckedAt(i));
+          fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
 
           nS = fit->GetParameter("Ns");
           miuS = fit->GetParameter("miuS");
@@ -446,8 +446,8 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
 
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
 
-          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2, 5)/(3.0/200));
-          printf("%s = %d\n",, ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+          printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
 
 
     }
