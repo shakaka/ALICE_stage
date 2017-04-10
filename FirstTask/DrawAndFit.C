@@ -189,7 +189,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit25FcnPC4->SetParName(11,  "nL");
   fit25FcnPC4->SetParName(12, "alphaR");
   fit25FcnPC4->SetParName(13, "nR");
-  fit25FcnPC4->SetParameters(3.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit25FcnPC4->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit25FcnPC4->FixParameter(10, 1.06);
   fit25FcnPC4->FixParameter(11, 3.23);
   fit25FcnPC4->FixParameter(12, 2.55);
@@ -203,7 +203,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit25FcnPC3->SetParName(11,  "nL");
   fit25FcnPC3->SetParName(12, "alphaR");
   fit25FcnPC3->SetParName(13, "nR");
-  fit25FcnPC3->SetParameters(3.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit25FcnPC3->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit25FcnPC3->FixParameter(10, 0.97);
   fit25FcnPC3->FixParameter(11, 3.98);
   fit25FcnPC3->FixParameter(12, 2.3);
@@ -217,7 +217,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit25FcnPCpp->SetParName(11,  "nL");
   fit25FcnPCpp->SetParName(12, "alphaR");
   fit25FcnPCpp->SetParName(13, "nR");
-  fit25FcnPCpp->SetParameters(3.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit25FcnPCpp->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit25FcnPCpp->FixParameter(10, 0.98);
   fit25FcnPCpp->FixParameter(11, 6.97);
   fit25FcnPCpp->FixParameter(12, 1.86);
@@ -232,7 +232,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit47FcnPC4->SetParName(11,  "nL");
   fit47FcnPC4->SetParName(12, "alphaR");
   fit47FcnPC4->SetParName(13, "nR");
-  fit47FcnPC4->SetParameters(3.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit47FcnPC4->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit47FcnPC4->FixParameter(10, 1.06);
   fit47FcnPC4->FixParameter(11, 3.23);
   fit47FcnPC4->FixParameter(12, 2.55);
@@ -246,7 +246,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit47FcnPC3->SetParName(11,  "nL");
   fit47FcnPC3->SetParName(12, "alphaR");
   fit47FcnPC3->SetParName(13, "nR");
-  fit47FcnPC3->SetParameters(63.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit47FcnPC3->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit47FcnPC3->FixParameter(10, 0.97);
   fit47FcnPC3->FixParameter(11, 3.98);
   fit47FcnPC3->FixParameter(12, 2.3);
@@ -260,7 +260,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fit47FcnPCpp->SetParName(11,  "nL");
   fit47FcnPCpp->SetParName(12, "alphaR");
   fit47FcnPCpp->SetParName(13, "nR");
-  fit47FcnPCpp->SetParameters(3.2e6, -1.1e6, 1.1e5, -43, 59, -25, 3.6,20000,3.09,0.07,0.97);
+  fit47FcnPCpp->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
   fit47FcnPCpp->FixParameter(10, 0.98);
   fit47FcnPCpp->FixParameter(11, 6.97);
   fit47FcnPCpp->FixParameter(12, 1.86);
@@ -277,7 +277,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //GEANT4 1.06,3.23,2.55,1.56
   TF1 *fit25FcnVC4 = new TF1("fit25FcnVC4",varGausCB,2,5,11);
   fit25FcnVC4->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit25FcnVC4->SetParameters(240000, 1.7, -0.7, -0.2, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVC4->SetParameters(240000, 1.74, -0.621, -0.268, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
   fit25FcnVC4->FixParameter(7, 1.06);
   fit25FcnVC4->FixParameter(8, 3.23);
   fit25FcnVC4->FixParameter(9, 2.55);
@@ -288,7 +288,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //GEANT3 0.97,3.98,2.3,3.03
   TF1 *fit25FcnVC3 = new TF1("fit25FcnVC3",varGausCB,2,5,11);
   fit25FcnVC3->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit25FcnVC3->SetParameters(240000, 1.7, -0.7, -0.2, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVC3->SetParameters(240000, 1.74, -0.621, -0.268, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
   fit25FcnVC3->FixParameter(7, 0.97);
   fit25FcnVC3->FixParameter(8, 3.98);
   fit25FcnVC3->FixParameter(9, 2.3);
@@ -299,7 +299,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //pp13TeV0.98,6.97,1.86,14.99
   TF1 *fit25FcnVCpp = new TF1("fit25FcnVCpp",varGausCB,2,5,11);
   fit25FcnVCpp->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit25FcnVCpp->SetParameters(240000, 1.7, -0.7, -0.2, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit25FcnVCpp->SetParameters(240000, 1.74, -0.621, -0.268, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
   fit25FcnVCpp->FixParameter(7, 0.98);
   fit25FcnVCpp->FixParameter(8, 6.97);
   fit25FcnVCpp->FixParameter(9, 1.86);
@@ -311,7 +311,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //GEANT4 1.06,3.23,2.55,1.56
   TF1 *fit47FcnVC4 = new TF1("fit47FcnVC4",varGausCB,2,5,11);
   fit47FcnVC4->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit47FcnVC4->SetParameters(240000, 1.7, -0.7, -0.2,20000, 3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVC4->SetParameters(240000, 1.74, -0.621, -0.268,20000, 3.09,0.07,0.97,3.98,2.3,3.03);
   fit47FcnVC4->FixParameter(7, 1.06);
   fit47FcnVC4->FixParameter(8, 3.23);
   fit47FcnVC4->FixParameter(9, 2.55);
@@ -322,7 +322,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //GEANT3 0.97,3.98,2.3,3.03
   TF1 *fit47FcnVC3 = new TF1("fit47FcnVC3",varGausCB,2,5,11);
   fit47FcnVC3->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit47FcnVC3->SetParameters(240000, 1.7, -0.7, -0.2, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVC3->SetParameters(240000, 1.74, -0.621, -0.268, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
   fit47FcnVC3->FixParameter(7, 0.97);
   fit47FcnVC3->FixParameter(8, 3.98);
   fit47FcnVC3->FixParameter(9, 2.3);
@@ -333,7 +333,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   //pp13TeV0.98,6.97,1.86,14.99
   TF1 *fit47FcnVCpp = new TF1("fit47FcnVCpp",varGausCB,2,5,11);
   fit47FcnVCpp->SetParNames("Nb", "miuB", "A", "B", "Ns", "miuS", "sigma", "alphaL", "nL", "alphaR", "nR");
-  fit47FcnVCpp->SetParameters(240000, 1.7, -0.7, -0.2, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
+  fit47FcnVCpp->SetParameters(240000, 1.74, -0.621, -0.268, 20000,3.09,0.07,0.97,3.98,2.3,3.03);
   fit47FcnVCpp->FixParameter(7, 0.98);
   fit47FcnVCpp->FixParameter(8, 6.97);
   fit47FcnVCpp->FixParameter(9, 1.86);
@@ -412,27 +412,45 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   // }
   if (hDiMuM) {
 
-    *myhist[0] = (TH1F*)hDiMuM->Clone(((TH1F*)araFunc->UncheckedAt(0))->GetName());
-    TCanvas *c1 =  new TCanvas();
-    gStyle->SetOptFit();
-    myhist[0]->Fit(((TH1F*)araFunc->UncheckedAt(0)), "RI");
-    myhist[0]->Draw();
-    c1->Print("c1.pdf(");
+    TF1 *fit = new TF1();
+    Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR;
+    TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
 
-    for (Int_t i = 1; i<11; i++){
-      *myhist[i] = (TH1F*)hDiMuM->Clone(((TH1F*)araFunc->UncheckedAt(i))->GetName());
+
+
+    for (Int_t i = 0; i<12; i++){
+      myhist[i] = (TH1F*)hDiMuM->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
       gStyle->SetOptFit();
-      myhist[i]->Fit(((TH1F*)araFunc->UncheckedAt(i)), "RI");
+      myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "R");
       myhist[i]->Draw();
-      c1->Print("c1.pdf");
-    }
 
-    *myhist[11] = (TH1F*)hDiMuM->Clone(((TH1F*)araFunc->UncheckedAt(11))->GetName());
-    TCanvas *c1 =  new TCanvas();
-    gStyle->SetOptFit();
-    myhist[11]->Fit(((TH1F*)araFunc->UncheckedAt(11)), "RI");
-    myhist[11]->Draw();
-    c1->Print("c1.pdf(");
+      if(i == 0){
+        c1->Print("c1.pdf(");
+      }else if(i == 12){
+        c1->Print("c1.pdf)");
+      }else{
+        c1->Print("c1.pdf");
+      }
+
+
+      //Get parameters
+          fit = myhist[i]->GetFunction((TF1*)araFunc->UncheckedAt(i));
+
+          nS = fit->GetParameter("Ns");
+          miuS = fit->GetParameter("miuS");
+      	  sigma = fit->GetParameter("sigma");
+          alphaL = fit->GetParameter("alphaL");
+          nL = fit->GetParameter("nL");
+          alphaR = fit->GetParameter("alphaR");
+          nR = fit->GetParameter("nR");
+
+          CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
+
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2, 5)/(3.0/200));
+          printf("%s = %d\n",, ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
+
+
+    }
 
 
     // gStyle->SetOptFit();
