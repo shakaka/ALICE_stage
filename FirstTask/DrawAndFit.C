@@ -171,6 +171,9 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   TH1F *hDiMuM = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hDiMuM") );
   TH1F *hEvCen = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hEvCen") );
   TH1F *hDiMuCh = dynamic_cast<TH1F *>(listOfHisto ->FindObject("hDiMuCh") );
+//histogram for compare each fit method
+  Int_t nMethod = 12;
+  TH1F *hNoJpsi = new TH1F("hNoJpsi", "Number of Jpsi", nMethod, 0, nMethod);
 
   TObjArray *araFunc = new TObjArray(20);
   araFunc->SetOwner();
@@ -375,29 +378,6 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
   fitBgVWG->SetRange(2, 5);
 
 
-  //CB2 for integration
-  //GEANT4
-  TF1 *CB2G4 = new TF1("CB2G4",CrystalBallExtended,2,5,7);
-  CB2G4->SetParameters(6055, 3.098, 0.06891, 1.06,3.23,2.55,1.56);
-
-  Int_t nJpsiG4 = (Int_t)(CB2G4->Integral(2.89127, 3.30473)/(3.0/200));
-  printf("nJpsiG4 = %d\n", nJpsiG4);
-
-  //GEANT3
-  TF1 *CB2G3 = new TF1("CB2G3",CrystalBallExtended,2,5,7);
-  CB2G3->SetParameters(6075, 3.098, 0.06804, 0.97,3.98,2.3,3.03);
-
-  Int_t nJpsiG3 = (Int_t)(CB2G3->Integral(2,5)/(3.0/200));
-  printf("nJpsiG3 = %d\n", nJpsiG3);
-
-  //pp
-  TF1 *CB2pp = new TF1("CB2pp",CrystalBallExtended,2,5,7);
-  CB2pp->SetParameters(6042, 3.098, 0.06821, 0.98,6.97,1.86,14.99);
-
-  Int_t nJpsipp = (Int_t)(CB2pp->Integral(2.89337, 3.302663)/(3.0/200));
-  printf("nJpsipp = %d\n", nJpsipp);
-
-
   // if (hDiMuPt) {
   //   new TCanvas();
   //   hDiMuPt->Draw();
@@ -448,9 +428,16 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
 
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
           printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
-
-
+// make a graph in case to see the differences between methods
+      if (hDiMuM) {
+        hNoJpsi->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+        hNoJpsi->SetBinContent(i+1, nJpsi);
+      }
     }
+    if (hDiMuM) {
+      hNoJpsi->Draw();
+    }
+
 
 
     // gStyle->SetOptFit();
