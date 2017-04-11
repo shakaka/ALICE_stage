@@ -435,7 +435,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
       }
     }
     if (hDiMuM) {
-      hNoJpsi->Draw();
+      hNoJpsi->Draw("H");
     }
 
 
