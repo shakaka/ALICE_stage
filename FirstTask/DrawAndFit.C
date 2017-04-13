@@ -54,7 +54,9 @@ Double_t varWGaus(Double_t *x, Double_t *par) {
   return par[0]*exp(-TMath::Power((x[0]-par[1]),2)/(2*TMath::Power((par[2]+par[3]*(x[0]-par[1])/par[1]),2)));
 }
 
-
+Double_t linearFit(Double_t *x, Double_t *par){
+  return par[0];
+}
 
 //For signal
 //
@@ -144,7 +146,7 @@ enum eList {
 
 
 
-void DrawAndFit( TString fileName ="AliConbined.root" ){
+void DrawAndFit( TString fileName ="AliCombined.root" ){
 
   TFile *file = TFile::Open( fileName.Data() );
 
@@ -157,6 +159,10 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
 
   new TCanvas();
   eventCounters->Draw("run","trigger","selected:yes");
+
+
+  Double_t nCMUL7 = eventCounters->GetSum("selected:yes/trigger:CMUL7-B-NOPF-MUFAST");
+  printf("number selected = %f\n", nCMUL7);
 
   //get dimuon pt histogram
   TObjArray *listOfHisto = dynamic_cast<TObjArray*> (file->FindObjectAny("listOfHisto"));
@@ -396,13 +402,14 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
     Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR;
     TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
 
+    Double_t araJpsi[12];
+
 
 
     for (Int_t i = 0; i<12; i++){
       myhist[i] = (TH1F*)hDiMuM->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
       gStyle->SetOptFit();
       myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "R");
-      myhist[i]->Draw();
 
       if(i == 0){
         c1->Print("c1.pdf(");
@@ -427,6 +434,7 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
 
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+          araJpsi[i] = nJpsi;
           printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
 // make a graph in case to see the differences between methods
       if (hDiMuM) {
@@ -435,7 +443,48 @@ void DrawAndFit( TString fileName ="AliConbined.root" ){
       }
     }
     if (hDiMuM) {
-      hNoJpsi->Draw("H");
+      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ;
+
+      for(Int_t i = 0; i <12; i++){
+        sumJ += araJpsi[i];
+        sqrtJ += araJpsi[i]*araJpsi[i];
+      }
+      avgJ = sumJ /12;
+      rmsJ = TMath::Sqrt( sqrtJ/12 );
+
+      for(Int_t i = 0; i <12; i++){
+        statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ) ;
+      }
+
+      statJ = TMath::Sqrt( statJ/12 );
+
+      hNoJpsi->Draw("E");
+
+      TLine *avgline = new TLine(0,avgJ,12,avgJ);
+      avgline->SetLineColor(kRed);
+      avgline->Draw();
+
+      TLine *statline = new TLine(0,avgJ+statJ,12,avgJ+statJ);
+      statline->SetLineColor(kRed);
+      statline->SetLineStyle(9);
+      statline->Draw();
+
+      TLine *statline2 = new TLine(0,avgJ-statJ,12,avgJ-statJ);
+      statline2->SetLineColor(kRed);
+      statline2->SetLineStyle(9);
+      statline2->Draw();
+
+
+      TLegend* leg = new TLegend(0.3, 0.33, 0.89, 0.90);
+      leg->SetFillStyle(0);
+      leg->SetLineColor(0);
+      leg->SetTextColor(kBlack);
+      leg->SetMargin(0.1);
+      // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
+      // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
+      leg->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, statJ, rmsJ) , "");
+      leg->Draw();
+
     }
 
 

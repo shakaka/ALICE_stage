@@ -133,15 +133,15 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   hMaDbJpsi->Sumw2();
   fOutput->AddAtAndExpand( hMaDbJpsi, kMaDbJpsi );
 
-  TH2F *hPtDbJpsi= new TH2F("hPtDbJpsi", "Double Jpsi Pt Distribution", 200, 0, 10, 200, 0, 10);
+  TH2F *hPtDbJpsi= new TH2F("hPtDbJpsi", "Double Jpsi Pt Distribution", 200, 0, 15, 200, 0, 15);
   hPtDbJpsi->Sumw2();
   fOutput->AddAtAndExpand( hPtDbJpsi, kPtDbJpsi );
 
-  TH2F *hYDbJpsi= new TH2F("hYDbJpsi", "Double Jpsi Y Distribution", 200, 0, 5, 200, 0, 5);
+  TH2F *hYDbJpsi= new TH2F("hYDbJpsi", "Double Jpsi Y Distribution", 200, 2, 5, 200, 2, 5);
   hYDbJpsi->Sumw2();
   fOutput->AddAtAndExpand( hYDbJpsi, kYDbJpsi );
 
-  TH2F *hPhiDbJpsi= new TH2F("hPhiDbJpsi", "Double Jpsi Phi Distribution", 200, 0, 7, 200, 0, 7);
+  TH2F *hPhiDbJpsi= new TH2F("hPhiDbJpsi", "Double Jpsi Phi Distribution", 200, -4, 4, 200, -4, 4);
   hPhiDbJpsi->Sumw2();
   fOutput->AddAtAndExpand( hPhiDbJpsi, kPhiDbJpsi );
 
@@ -243,7 +243,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
           if ( ! fMuonTrackCuts->IsSelected(track4) ) continue;
 
           Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
-          TLorentzVector lvMuon1, lvMuon2, lvDimuon, lvMuon3, lvMuon4, lvDimuon2;
+          TLorentzVector lvMuon1, lvMuon2, lvDimuon, lvMuon3, lvMuon4, lvDimuon2, lvTemp;
 
           Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
           Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
@@ -298,11 +298,23 @@ void AliDoubleJpsi::UserExec(Option_t *)
           }
 
           //Getting data wanted
-          Double_t maDiMu1 = lvDimuon.M();
-          Double_t maDiMu2 = lvDimuon2.M();
 
           Double_t ptDiMu1 = lvDimuon.Pt();
           Double_t ptDiMu2 = lvDimuon2.Pt();
+
+          if(ptDiMu1>ptDiMu2){
+            Double_t temp = ptDiMu1;
+            ptDiMu1 = ptDiMu2;
+            ptDiMu2 = temp;
+
+            lvTemp = lvDimuon;
+            lvDimuon = lvDimuon2;
+            lvDimuon2 = lvTemp;
+          }
+
+          Double_t maDiMu1 = lvDimuon.M();
+          Double_t maDiMu2 = lvDimuon2.M();
+
 
           Double_t phiDiMu1 = lvDimuon.Phi();
           Double_t phiDiMu2 = lvDimuon2.Phi();
@@ -312,17 +324,22 @@ void AliDoubleJpsi::UserExec(Option_t *)
           Double_t yDiMu1 = TMath::Log((lvDimuon.E()+plDiMu1)/(lvDimuon.E()-plDiMu1))/2;
           Double_t yDiMu2 = TMath::Log((lvDimuon2.E()+plDiMu2)/(lvDimuon2.E()-plDiMu2))/2;
 
+
+
+
+
+
           ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
-          ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
+          // ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
 
           ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu1, ptDiMu2);
-          ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
+          // ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
 
           ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu1, yDiMu2);
-          ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
+          // ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
 
           ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu1, phiDiMu2);
-          ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
+          // ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
 
 
         }
