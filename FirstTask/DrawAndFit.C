@@ -20,6 +20,8 @@
 #include "TSpectrum.h"
 #include "TStyle.h"
 #include "TPaveText.h"
+#include "TFitResult.h"
+#include "TFitResultPtr.h"
 //PWG includes
 #include <AliCounterCollection.h>
 
@@ -409,11 +411,11 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
     for (Int_t i = 0; i<12; i++){
       myhist[i] = (TH1F*)hDiMuM->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
       gStyle->SetOptFit();
-      myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "R");
+      TFitResultPtr r = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
 
       if(i == 0){
         c1->Print("c1.pdf(");
-      }else if(i == 12){
+      }else if(i == 11){
         c1->Print("c1.pdf)");
       }else{
         c1->Print("c1.pdf");
@@ -433,9 +435,15 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
 
-          Int_t nJpsi = (Int_t)(CB2Fit->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/200));
+          // Double_t erIntegral =  ((TF1*)araFunc->UncheckedAt(i))->IntegralError(2,5,r.GetParams(), r.GetCovarianceMatrix().GetMatrixArray());
           araJpsi[i] = nJpsi;
           printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
+
+          for (Int_t ii= 0; ii<125;ii++){
+            printf("gg%d = %f\n",ii, (r->GetCovarianceMatrix()->GetMatrixArray())[ii]);
+          }
+
 // make a graph in case to see the differences between methods
       if (hDiMuM) {
         hNoJpsi->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
