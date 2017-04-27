@@ -2,7 +2,7 @@ AliDoubleJpsi *AddDoubleJpsi(Bool_t usePhysicsSelection, TString outputFileName 
 
   AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
   if (!mgr) {
-    ::Error("AddTaskMuonsCharge", "No analysis manager to connect to.");
+    ::Error("AddDoubleJpsi", "No analysis manager to connect to.");
     return NULL;
   }
 

@@ -214,7 +214,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnPC3->SetParName(11,  "nL");
   fit25FcnPC3->SetParName(12, "alphaR");
   fit25FcnPC3->SetParName(13, "nR");
-  fit25FcnPC3->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
+  fit25FcnPC3->SetParameters(4.65e6, -2.28e6, 9.49e4,-25.5,49.6,-24.8, 4.5,20000,3.09,0.07,0.97);
   fit25FcnPC3->FixParameter(10, 0.97);
   fit25FcnPC3->FixParameter(11, 3.98);
   fit25FcnPC3->FixParameter(12, 2.3);
@@ -228,7 +228,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnPCpp->SetParName(11,  "nL");
   fit25FcnPCpp->SetParName(12, "alphaR");
   fit25FcnPCpp->SetParName(13, "nR");
-  fit25FcnPCpp->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
+  fit25FcnPCpp->SetParameters(4.65e6, -2.28e6, 9.49e4,-25.5,49.6,-24.8, 4.5,20000,3.09,0.07,0.97);
   fit25FcnPCpp->FixParameter(10, 0.98);
   fit25FcnPCpp->FixParameter(11, 6.97);
   fit25FcnPCpp->FixParameter(12, 1.86);
@@ -243,7 +243,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPC4->SetParName(11,  "nL");
   fit47FcnPC4->SetParName(12, "alphaR");
   fit47FcnPC4->SetParName(13, "nR");
-  fit47FcnPC4->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
+  fit47FcnPC4->SetParameters(1.95e7, -6.57e6, 5.97e5, 54.1, 4.98, -18.7, 6.14,20000,3.09,0.07,0.97);
   fit47FcnPC4->FixParameter(10, 1.06);
   fit47FcnPC4->FixParameter(11, 3.23);
   fit47FcnPC4->FixParameter(12, 2.55);
@@ -257,7 +257,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPC3->SetParName(11,  "nL");
   fit47FcnPC3->SetParName(12, "alphaR");
   fit47FcnPC3->SetParName(13, "nR");
-  fit47FcnPC3->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
+  fit47FcnPC3->SetParameters(1.95e7, -6.57e6, 5.97e5, 54.1, 4.98, -18.7, 6.14,20000,3.09,0.07,0.97);
   fit47FcnPC3->FixParameter(10, 0.97);
   fit47FcnPC3->FixParameter(11, 3.98);
   fit47FcnPC3->FixParameter(12, 2.3);
@@ -271,7 +271,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPCpp->SetParName(11,  "nL");
   fit47FcnPCpp->SetParName(12, "alphaR");
   fit47FcnPCpp->SetParName(13, "nR");
-  fit47FcnPCpp->SetParameters(3.89e6, -1.05e6, 7.75e4, -29.3, 52, -25.2, 4.44,20000,3.09,0.07,0.97);
+  fit47FcnPCpp->SetParameters(1.95e7, -6.57e6, 5.97e5, 54.1, 4.98, -18.7, 6.14,20000,3.09,0.07,0.97);
   fit47FcnPCpp->FixParameter(10, 0.98);
   fit47FcnPCpp->FixParameter(11, 6.97);
   fit47FcnPCpp->FixParameter(12, 1.86);
@@ -377,9 +377,9 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fitBgE->SetRange(2, 5);
 
   TF1 *fitBgP = new TF1("fitBgP",myPol23,2,5,7);
-  fitBgP->SetParameters(1.1e6, 2.83e5, 5.86e4,-11.7,51.1,-26, 3.8);
+  fitBgP->SetParameters(4.65e6, -2.28e6, 9.49e4,-25.5,49.6,-24.8, 4.5);//1.1e6, 2.83e5, 5.86e4,-11.7,51.1,-26, 3.8(2-5)
   fitBgP->SetParLimits(6, 3, 8);
-  fitBgP->SetRange(2, 5);
+  fitBgP->SetRange(2.2, 4.5);
 
   TF1 *fitBgVWG = new TF1("fitBgVWG",varGausCB,2,5,4);
   fitBgVWG->SetParameters(240000, 1.7, -0.7, -0.2);
@@ -401,26 +401,18 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   if (hDiMuM) {
 
     TF1 *fit = new TF1();
-    Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR;
+    Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB;
     TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
 
     Double_t araJpsi[12];
-
+    Double_t araBg[12];
+    Double_t araErIntegral[12];
 
 
     for (Int_t i = 0; i<12; i++){
       myhist[i] = (TH1F*)hDiMuM->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
       gStyle->SetOptFit();
       TFitResultPtr r = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
-
-      if(i == 0){
-        c1->Print("c1.pdf(");
-      }else if(i == 11){
-        c1->Print("c1.pdf)");
-      }else{
-        c1->Print("c1.pdf");
-      }
-
 
       //Get parameters
           fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
@@ -435,36 +427,127 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
 
-          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/200));
-          // Double_t erIntegral =  ((TF1*)araFunc->UncheckedAt(i))->IntegralError(2,5,r.GetParams(), r.GetCovarianceMatrix().GetMatrixArray());
-          araJpsi[i] = nJpsi;
-          printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
+          // CB2Fit->Draw();
 
-          for (Int_t ii= 0; ii<125;ii++){
-            printf("gg%d = %f\n",ii, (r->GetCovarianceMatrix()->GetMatrixArray())[ii]);
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/200));
+          if (i<6){
+            p0 = fit->GetParameter("p0");
+            p1 = fit->GetParameter("p1");
+            p2 = fit->GetParameter("p2");
+            p20 = fit->GetParameter("p20");
+            p21 = fit->GetParameter("p21");
+            p22 = fit->GetParameter("p22");
+            p23 = fit->GetParameter("p23");
+
+            fitBgP->SetParameters(p0, p1, p2, p20, p21, p22, p23);
+
+            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+          }else{
+            nB = fit->GetParameter("Nb");
+            miuB = fit->GetParameter("miuB");
+            bA = fit->GetParameter("A");
+            bB = fit->GetParameter("B");
+
+            fitBgVWG->SetParameters(nB, miuB, bA, bB);
+
+            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
           }
+
+          araBg[i] = nBackground;
+          araJpsi[i] = nJpsi;
+          // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nJpsi);
+          // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
+
+          Double_t sigOverB = (Double_t)( (Double_t)araJpsi[i]/(Double_t)araBg[i] ) ;
+
+          // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
+
+
+
+//Extracting the needed Matrix
+          Int_t nPar  = ((TF1*)araFunc->UncheckedAt(i))->GetNpar();
+          Double_t erMatrix[49];
+          Int_t iErMatrix = 0;
+
+
+          for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
+            // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
+
+            erMatrix[iErMatrix] = (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+            iErMatrix++;
+
+            if((iMatrix+1)%nPar==0){
+              iMatrix+=nPar-7;
+            }
+          }
+          // for (Int_t iii= 0; iii<50; iii++){
+          //   printf("MM%d = %f\n",iii, erMatrix[iii]);
+          // }
+          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/200) );
+          araErIntegral[i] = erIntegral;
+
+
+          TLegend* leg = new TLegend(0.2, 0.4, 0.5, 0.5);
+          leg->SetFillStyle(0);
+          leg->SetLineColor(0);
+          leg->SetTextColor(kBlack);
+          leg->SetMargin(0.1);
+          // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
+          // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
+          leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
+          leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %f.0",nJpsi, erIntegral) , "");
+          leg->Draw();
+
+          if(i == 0){
+            c1->Print("c1.pdf(");
+          }else if(i == 11){
+            c1->Print("c1.pdf)");
+          }else{
+            c1->Print("c1.pdf");
+          }
+
+          // printf("erI = %f\n", erIntegral);
+
 
 // make a graph in case to see the differences between methods
       if (hDiMuM) {
         hNoJpsi->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
         hNoJpsi->SetBinContent(i+1, nJpsi);
+        hNoJpsi->SetBinError(i+1, erIntegral);
       }
+
+
     }
     if (hDiMuM) {
-      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ;
+      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ, rmsError;
 
       for(Int_t i = 0; i <12; i++){
-        sumJ += araJpsi[i];
-        sqrtJ += araJpsi[i]*araJpsi[i];
-      }
-      avgJ = sumJ /12;
-      rmsJ = TMath::Sqrt( sqrtJ/12 );
+        //weightting for pp
+        if (i%3==2){
+          sumJ += araJpsi[i]*2;
+          sqrtJ += araJpsi[i]*araJpsi[i]*2;
+          rmsError += araErIntegral[i]*araErIntegral[i]*2;
+        }else{
+          sumJ += araJpsi[i];
+          sqrtJ += araJpsi[i]*araJpsi[i];
+          rmsError += araErIntegral[i]*araErIntegral[i];
+        }
 
+      }
+      avgJ = sumJ /16;
+      rmsJ = TMath::Sqrt( sqrtJ/16 );
+      rmsError = TMath::Sqrt( rmsError/16 );
+
+//Another loop cause needing in Average
       for(Int_t i = 0; i <12; i++){
-        statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ) ;
+        if (i%3==2){
+          statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ)*2 ;
+        }else{
+          statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ) ;
+        }
       }
 
-      statJ = TMath::Sqrt( statJ/12 );
+      statJ = TMath::Sqrt( statJ/16 );
 
       hNoJpsi->Draw("E");
 
@@ -483,15 +566,15 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
       statline2->Draw();
 
 
-      TLegend* leg = new TLegend(0.3, 0.33, 0.89, 0.90);
-      leg->SetFillStyle(0);
-      leg->SetLineColor(0);
-      leg->SetTextColor(kBlack);
-      leg->SetMargin(0.1);
+      TLegend* legRe = new TLegend(0.3, 0.33, 0.89, 0.90);
+      legRe->SetFillStyle(0);
+      legRe->SetLineColor(0);
+      legRe->SetTextColor(kBlack);
+      legRe->SetMargin(0.1);
       // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
       // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
-      leg->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, statJ, rmsJ) , "");
-      leg->Draw();
+      legRe->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, rmsError, statJ) , "");
+      legRe->Draw();
 
     }
 
