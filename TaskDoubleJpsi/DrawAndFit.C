@@ -186,11 +186,11 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TH2F *hPhiDbJpsi = dynamic_cast<TH2F *>(listOfHisto ->FindObject("hPhiDbJpsi") );
 //histogram for compare each fit method
   Int_t nMethod = 18;
-  TH1F *hNoJpsi[10];//needed to be initiate
-
+  TH1F *hNoJpsiX[10];//needed to be initiate
+  TH1F *hNoJpsiY[10];
   for (Int_t i = 0; i<10 ; i++){
-    hNoJpsi[i] = new TH1F(Form("hNoJpsi%d", i), "Number of Jpsi", nMethod, 0, nMethod);
-
+    hNoJpsiX[i] = new TH1F(Form("hNoJpsiX%d", i), "Number of Jpsi", nMethod, 0, nMethod);
+    hNoJpsiY[i] = new TH1F(Form("hNoJpsiY%d", i), "Number of Jpsi", nMethod, 0, nMethod);
   }
 
   //Treat the th2f to th1d by projection
@@ -665,12 +665,16 @@ Double_t araCounterX[10] ={0};
               // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
               araSumX[runs] += nJpsi;
               araCounterX[runs]++;
+              if(araJpsi[i]<araErIntegral[i]){//if the error is greater than value
+                araBg[i] = -1;
+                araJpsi[i] = -1;
+              }
             }else{
               araBg[i] = -1;
               araJpsi[i] = -1;
             }
 
-            hNoJpsi[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+            hNoJpsiX[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
 
 
       }//loop methods = 18
@@ -690,8 +694,8 @@ Double_t araCounterX[10] ={0};
 
       for (Int_t setBin = 0; setBin <18; setBin++){
         if (araJpsi[setBin]>0){
-          hNoJpsi[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
-          hNoJpsi[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
+          hNoJpsiX[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
+          hNoJpsiX[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
         }
       }
 
@@ -702,7 +706,7 @@ Double_t araCounterX[10] ={0};
 
     }//if histo exist
 
-    hNoJpsi[runs]->Write(Form("NoJpsiX%d",runs));
+    hNoJpsiX[runs]->Write(Form("NoJpsiX%d",runs));
   }//loop runs = 10
 
 
@@ -711,8 +715,8 @@ Double_t araCounterX[10] ={0};
     for (Int_t runs = 0 ; runs<10; runs++){
 
 
-      if (hArraProX[runs]){
-        c1[runs] = new TCanvas();
+      if (hArraProY[runs]){
+        c2[runs] = new TCanvas();
 
 
         for (Int_t i = 0; i<18; i++){
@@ -811,11 +815,11 @@ Double_t araCounterX[10] ={0};
               leg->Draw();
 
               if(i == 0){
-                c1[runs]->Print(Form("c0%d.pdf(",runs));
+                c2[runs]->Print(Form("c1%d.pdf(",runs));
               }else if(i == 17){
-                c1[runs]->Print(Form("c0%d.pdf)",runs));
+                c2[runs]->Print(Form("c1%d.pdf)",runs));
               }else{
-                c1[runs]->Print(Form("c0%d.pdf",runs));
+                c2[runs]->Print(Form("c1%d.pdf",runs));
               }
 
               // printf("erI = %f\n", erIntegral);
@@ -826,12 +830,16 @@ Double_t araCounterX[10] ={0};
                 // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
                 araSumX[runs] += nJpsi;
                 araCounterX[runs]++;
+                if(araJpsi[i]<araErIntegral[i]){//if the error is greater than value
+                  araBg[i] = -1;
+                  araJpsi[i] = -1;
+                }
               }else{
                 araBg[i] = -1;
                 araJpsi[i] = -1;
               }
 
-              hNoJpsi[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+              hNoJpsiY[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
 
 
         }//loop methods = 18
@@ -851,8 +859,8 @@ Double_t araCounterX[10] ={0};
 
         for (Int_t setBin = 0; setBin <18; setBin++){
           if (araJpsi[setBin]>0){
-            hNoJpsi[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
-            hNoJpsi[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
+            hNoJpsiY[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
+            hNoJpsiY[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
           }
         }
 
@@ -863,7 +871,7 @@ Double_t araCounterX[10] ={0};
 
       }//if histo exist
 
-      hNoJpsi[runs]->Write(Form("NoJpsiY%d",runs));
+      hNoJpsiY[runs]->Write(Form("NoJpsiY%d",runs));
     }//loop runs = 10
 
 
