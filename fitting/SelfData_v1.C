@@ -1,0 +1,104 @@
+#include "TROOT.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TBranch.h"
+#include "TH1F.h"
+#include "TF1.h"
+#include "TCanvas.h"
+#include "TMath.h"
+#include "TSpectrum.h"
+
+
+
+// Exeponential background function
+Double_t background(Double_t *x, Double_t *par) {
+   return exp(par[0]+par[1]*x[0]) ;
+}
+
+
+// Gaussian distribution function
+Double_t gausDis(Double_t *x, Double_t *par) {
+  return par[0]*exp(-0.5*(TMath::Power(((x[0]-par[1])/par[2]),2)));
+}
+
+
+// Sum of background and peak function
+Double_t fitFunction(Double_t *x, Double_t *par) {
+  return background(x,par) + gausDis(x,&par[2]);
+}
+
+
+
+
+
+
+void SelfData_v1()
+{
+  gROOT->Reset();
+ 
+  Int_t nbin = 150;
+  TH1F *bgData = new TH1F("", "Random Background", nbin, 2, 5);
+  TH1F *sgData = new TH1F("", "Random Data", nbin, 2, 5);
+  TH1F *totData = new TH1F("", "Random Total", nbin, 2, 5);
+  TH1F *noBg = new TH1F("", "Random TotalNo Background", nbin, 2, 5);
+
+
+  totData->SetLineColor(4);
+  //Fitting
+  TF1 *fitFcn = new TF1("fitFcn",fitFunction,2,5,5);
+ 
+  fitFcn->SetParameters(1,-1,1,3.09,0.07);
+  totData->Fit("fitFcn");
+
+  TF1 *backFcn = new TF1("backFcn",background,2,5,2);
+  backFcn->SetLineColor(kRed);
+  TF1 *signalFcn = new TF1("signalFcn",gausDis,2,5,3);
+  signalFcn->SetLineColor(kBlue);
+  signalFcn->SetNpx(500);
+ 
+ 
+
+
+
+
+  TCanvas *c2 = new TCanvas("c2", "c2");
+  c2->Divide(1,3);
+
+  TF1 funcGaus ("myGaus", "gaus(0)");
+  funcGaus.SetParameters(1, 3.09, 0.07);
+
+  TF1 funcInExpo ("inExpo", "expo(0)");
+  funcInExpo.SetParameters(1, -1);
+
+  bgData->Sumw2();
+  bgData->FillRandom("inExpo",20e3);
+  bgData->SetLineColor(1);
+
+  totData->Add(bgData);
+ 
+  sgData->Sumw2();
+  sgData->FillRandom("myGaus",2e3);
+  sgData->SetLineColor(2);
+
+  totData->Add(sgData);
+ 
+  TSpectrum *s = new TSpectrum(2);
+  TH1 *hb = s->Background(totData,30,"same");
+  noBg->Add(totData);
+  noBg->Add(hb, -1);
+
+
+  c2->cd(1);
+  totData->Draw("h") ;
+  sgData->Draw("same");
+  bgData->Draw("same");
+
+  c2->cd(2);
+  totData->Fit("pol2");
+  totData->Draw("h");
+
+  c2->cd(3);
+  noBg->Fit("myGaus");
+  noBg->Draw("same");
+
+}

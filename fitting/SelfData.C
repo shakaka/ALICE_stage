@@ -1,0 +1,250 @@
+
+#include "TROOT.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TBranch.h"
+#include "TH1F.h"
+#include "TF1.h"
+#include "TCanvas.h"
+#include "TMath.h"
+#include "TSpectrum.h"
+#include "TStyle.h"
+
+
+//For background
+//
+// Exeponential background function
+Double_t expBg(Double_t *x, Double_t *par) {
+   return exp(par[0]+par[1]*x[0]) ;
+}
+
+// Pol2 distribution function
+Double_t myPol2(Double_t *x, Double_t *par) {
+  return par[0]+par[1]*x[0]+par[2]*x[0]*x[0];
+}
+// varWGaus distribution function
+Double_t varWGaus(Double_t *x, Double_t *par) {
+  return par[0]*exp(-TMath::Power((x[0]-par[1]),2)/(2*TMath::Power((par[2]+par[3]*(x[0]-par[1])/par[1]),2)));
+}
+
+
+
+//For signal
+//
+// Gaussian distribution function(n, miu, sigma)
+Double_t gausDis(Double_t *x, Double_t *par) {
+  return par[0]*exp(-0.5*(TMath::Power(((x[0]-par[1])/par[2]),2)));
+}
+
+// extended crystall ball - tails on both sides
+Double_t CrystalBallExtended(Double_t *x,Double_t *par)
+// 0:N,1:mu,2:sigma,3:alphaL,4:nL,5:alphaR,6:nR
+// 7 parameters
+{
+
+
+  Double_t t = TMath::Sign(1.,par[3])*TMath::Sign(1.,par[5])*(x[0]-par[1])/par[2];
+
+
+  Double_t absAlpha_L = fabs((Double_t)par[3]);
+  Double_t absAlpha_R = fabs((Double_t)par[5]);
+
+  if ( (t > -absAlpha_L) && (t < absAlpha_R) ) {
+    return par[0]*exp(-0.5*t*t);
+  }
+  else if (t <= -absAlpha_L) {
+    Double_t a =  TMath::Power(par[4]/absAlpha_L,par[4])*exp(-0.5*absAlpha_L*absAlpha_L);
+    Double_t b= par[4]/absAlpha_L - absAlpha_L;
+
+    return par[0]*(a/TMath::Power(b - t, par[4]));
+  }
+  else/*if (t >= absAlpha_R) */{
+    Double_t c =  TMath::Power(par[6]/absAlpha_R,par[6])*exp(-0.5*absAlpha_R*absAlpha_R);
+    Double_t d= par[6]/absAlpha_R - absAlpha_R;
+
+    return par[0]*(c/TMath::Power(d + t, par[6]));
+  }
+
+} 
+
+
+
+// Sum of background and peak function
+//
+Double_t expGaus(Double_t *x, Double_t *par) {
+  return expBg(x,par) + gausDis(x,&par[2]);
+}
+
+Double_t mpol2Gaus(Double_t *x, Double_t *par) {
+  return myPol2(x, par) + gausDis(x,&par[3]);
+}
+
+Double_t varGausGaus(Double_t *x, Double_t *par) {
+  return varWGaus(x,par) + gausDis(x,&par[4]);
+}
+
+
+
+
+Double_t expCB(Double_t *x, Double_t *par) {
+  return expBg(x,par) + CrystalBallExtended(x,&par[2]);
+}
+
+Double_t pol2CB(Double_t *x, Double_t *par) {
+  return myPol2(x, par) + CrystalBallExtended(x,&par[3]);
+}
+
+Double_t varGausCB(Double_t *x, Double_t *par) {
+  return varWGaus(x,par) + CrystalBallExtended(x,&par[4]);
+}
+
+
+
+
+
+
+void SelfData()
+{
+  gROOT->Reset();
+
+  Int_t nbin = 150;
+  TH1F *bgData = new TH1F("", "Random Background", nbin, 2, 5);
+  TH1F *sgData = new TH1F("", "Random Data", nbin, 2, 5);
+
+  TH1F *egFit = new TH1F("", "EG Fit", nbin, 2, 5);
+  TH1F *pgFit = new TH1F("", "PG Fit", nbin, 2, 5);
+  TH1F *vgFit = new TH1F("", "VG Fit", nbin, 2, 5);
+
+  TH1F *ecFit = new TH1F("", "EC Fit", nbin, 2, 5);
+  TH1F *pcFit = new TH1F("", "PC Fit", nbin, 2, 5);
+  TH1F *vcFit = new TH1F("", "VC Fit", nbin, 2, 5);
+
+  TH1F *noBg = new TH1F("", "Random TotalNo Background", nbin, 2, 5);
+
+  //testing
+  //TH1F *testing = new TH1F("", "test", nbin, 2, 5);
+
+  //Fitting
+  TF1 *fitFcnEG = new TF1("fitFcnEG",expGaus,2,5,5);
+  fitFcnEG->SetParameters(1,-1,1,3.09,0.07);
+
+
+  TF1 *fitFcnPG = new TF1("fitFcnPG",mpol2Gaus,2,5,6);
+  fitFcnPG->SetParameters(1000,-430,44,1,3.09,0.07);
+
+
+  TF1 *fitFcnVG = new TF1("fitFcnVG",varGausGaus,2,5,7);
+  fitFcnVG->SetParameters(500,1,1,1, 1, 3.09, 0.07);
+  fitFcnVG->SetParLimits(0, 500,501);
+  fitFcnVG->SetParLimits(1, 0, 1);
+  fitFcnVG->SetParLimits(2, 1, 2);
+  fitFcnVG->SetParLimits(3, 0, 1);
+  fitFcnVG->SetParLimits(5, 3, 3.2);
+  fitFcnVG->SetParLimits(6, 0, 1);
+
+  TF1 *fitFcnEC = new TF1("fitFcnEC",expCB,2,5,9);
+  fitFcnEC->SetParameters(1,-1,1,3.09,0.07,6,200,4,2);
+
+
+
+  TF1 *fitFcnPC = new TF1("fitFcnPC",pol2CB,2,5,10);
+  fitFcnPC->SetParameters(1000,-430,44,1,3.09,0.07,6,200,4,2);
+
+
+  TF1 *fitFcnVC = new TF1("fitFcnVC",varGausCB,2,5,11);
+  fitFcnVC->SetParameters(500,1,1,1, 1, 3.09, 0.07,6,200,4,2);
+
+
+  gStyle->SetOptFit();
+  TCanvas *c2 = new TCanvas("c2", "c2");
+  c2->Divide(2,3);
+
+  TF1 funcGaus ("myGaus", "gaus(0)");
+  funcGaus.SetParameters(1, 3.09, 0.07);
+
+  TF1 funcInExpo ("inExpo", "expo(0)");
+  funcInExpo.SetParameters(1, -1);
+
+  bgData->Sumw2();
+  bgData->FillRandom("inExpo",20e3);
+  bgData->SetLineColor(1);
+
+  egFit->Add(bgData);
+  pgFit->Add(bgData);
+  vgFit->Add(bgData);
+  ecFit->Add(bgData);
+  pcFit->Add(bgData);
+  vcFit->Add(bgData);
+
+  sgData->Sumw2();
+  sgData->FillRandom("myGaus",2e3);
+  sgData->SetLineColor(2);
+
+  egFit->Add(sgData);
+  pgFit->Add(sgData);
+  vgFit->Add(sgData);
+  ecFit->Add(sgData);
+  pcFit->Add(sgData);
+  vcFit->Add(sgData);
+  //Try to treat
+  /* TSpectrum *s = new TSpectrum(2);
+  TH1 *hb = s->Background(totData,30,"same");
+  noBg->Add(totData);
+  noBg->Add(hb, -1);
+  */
+
+
+  //testing
+  /* TF1 *fitFcnV = new TF1("fitFcnV",varWGaus,2,5,4);
+  fitFcnV->SetParameters(30,1,1,1);
+  c2->cd(2);
+  fitFcnV->DrawCopy("l");
+  fitFcnV->SetParameters(30,1.2,1,1);
+  fitFcnV->DrawCopy("lsame");
+  fitFcnV->SetParameters(30,0.9,1,1);
+  fitFcnV->DrawCopy("lsame");
+  */
+
+
+  c2->cd(1);
+  egFit->Fit("fitFcnEG");
+
+  double sigma = fitFcnEG->GetParameter(4);
+  double miu = fitFcnEG->GetParameter(3);
+  double eventN = fitFcnEG->Integral(miu-sigma*3, miu+sigma*3);
+  double upper = miu-sigma*3;
+  double lower = miu+sigma*3;
+
+  int upperbin = int(upper/0.02);
+  int lowerbin = int(lower/0.02);
+
+  int eventN2 = egFit->Integral(144, 165);
+  printf("event number = %d\n", eventN2);
+  printf("event number = %g\n", eventN);
+  printf("sigma = %g\n", sigma);
+  printf("miu = %g\n", miu);
+
+
+  egFit->Draw("h");
+
+  c2->cd(3);
+  pgFit->Fit("fitFcnPG");
+  pgFit->Draw("h");
+
+  c2->cd(5);
+  vgFit->Fit("fitFcnVG");
+  vgFit->Draw("h");
+
+  c2->cd(2);
+  ecFit->Fit("fitFcnEC");
+  ecFit->Draw("h");
+
+  c2->cd(4);
+  pcFit->Fit("fitFcnPC");
+  pcFit->Draw("h");
+
+  c2->cd(6);
+  vcFit->Fit("fitFcnVC");
+  vcFit->Draw("h");
+
+}

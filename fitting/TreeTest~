@@ -1,0 +1,4 @@
+void AnalyzeTree()
+{
+   // Variables used to store the data
+   Int_t     totalSize = 0;        // Sum of data size (in bytes) of all events

@@ -1,0 +1,5 @@
+void myMacro(){
+  cout << "GG" <<endl;
+}
+
+
