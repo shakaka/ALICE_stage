@@ -519,24 +519,24 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 
     }
     if (hDiMuM) {
-      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ, rmsError;
+      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ, avgError;
 
       for(Int_t i = 0; i <12; i++){
         //weightting for pp
         if (i%3==2){
           sumJ += araJpsi[i]*2;
           sqrtJ += araJpsi[i]*araJpsi[i]*2;
-          rmsError += araErIntegral[i]*araErIntegral[i]*2;
+          avgError += araErIntegral[i]*2;
         }else{
           sumJ += araJpsi[i];
           sqrtJ += araJpsi[i]*araJpsi[i];
-          rmsError += araErIntegral[i]*araErIntegral[i];
+          avgError += araErIntegral[i];
         }
 
       }
       avgJ = sumJ /16;
       rmsJ = TMath::Sqrt( sqrtJ/16 );
-      rmsError = TMath::Sqrt( rmsError/16 );
+      avgError = avgError/16;
 
 //Another loop cause needing in Average
       for(Int_t i = 0; i <12; i++){
@@ -573,7 +573,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
       legRe->SetMargin(0.1);
       // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
       // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
-      legRe->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, rmsError, statJ) , "");
+      legRe->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, avgError, statJ) , "");
       legRe->Draw();
 
     }
