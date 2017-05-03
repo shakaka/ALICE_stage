@@ -537,6 +537,7 @@ TH1D *myhist[18];
 Double_t araJpsi[18];
 Double_t araBg[18];
 Double_t araErIntegral[18];
+Double_t araChi2[18];
 TCanvas * c1[10];
 TCanvas * c2[10];
 
@@ -544,6 +545,8 @@ Double_t araAvgX[10];
 Double_t araSigmaX[10];
 Double_t araSumX[10] = {0};
 Double_t araCounterX[10] ={0};
+
+
 
 
 //for X projection
@@ -665,7 +668,7 @@ Double_t araCounterX[10] ={0};
               // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
               araSumX[runs] += nJpsi;
               araCounterX[runs]++;
-              if(araJpsi[i]<araErIntegral[i]){//if the error is greater than value
+              if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
                 araBg[i] = -1;
                 araJpsi[i] = -1;
               }
@@ -830,7 +833,7 @@ Double_t araCounterX[10] ={0};
                 // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
                 araSumX[runs] += nJpsi;
                 araCounterX[runs]++;
-                if(araJpsi[i]<araErIntegral[i]){//if the error is greater than value
+                if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
                   araBg[i] = -1;
                   araJpsi[i] = -1;
                 }

@@ -494,8 +494,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
           leg->SetMargin(0.1);
           // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
           // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
-          leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
-          leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %f.0",nJpsi, erIntegral) , "");
+          leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
+          leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %.0f",nJpsi, erIntegral) , "");
           leg->Draw();
 
           if(i == 0){
@@ -573,7 +573,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
       legRe->SetMargin(0.1);
       // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
       // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
-      legRe->AddEntry((TObject*)0,Form("N = %f (stat) %f (sys) %f",avgJ, avgError, statJ) , "");
+      legRe->AddEntry((TObject*)0,Form("N = %.0f (stat) %.2f (sys) %.2f",avgJ, avgError, statJ) , "");
       legRe->Draw();
 
     }
