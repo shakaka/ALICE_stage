@@ -563,7 +563,7 @@ Double_t chiDiByNDF;
       for (Int_t i = 0; i<18; i++){
         myhist[i] = (TH1D*)hArraProX[runs]->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
         gStyle->SetOptFit();
-        TFitResultPtr r = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
+        TFitResultPtr rX = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
 
         //Get parameters
             fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
@@ -642,7 +642,7 @@ Double_t chiDiByNDF;
             for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
               // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-              erMatrix[iErMatrix] = (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+              erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
               iErMatrix++;
 
               if((iMatrix+1)%nPar==0){
@@ -661,7 +661,7 @@ Double_t chiDiByNDF;
             leg->SetMargin(0.1);
             leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
             leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
-            Int_t fitStatus = r;
+            Int_t fitStatus = rX;
             leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
             leg->Draw();
 
@@ -806,8 +806,8 @@ Double_t chiDiByNDF;
 
 
               // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-
-              Double_t sigOverB = (Double_t)( (Double_t)araJpsi[i]/(Double_t)araBg[i] ) ;
+              if(nBackground!=0)
+              Double_t sigOverB = ( (Double_t)nJpsi/(Double_t)nBackground ) ;
 
               // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
@@ -822,7 +822,7 @@ Double_t chiDiByNDF;
               for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
                 // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-                erMatrix[iErMatrix] = (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+                erMatrix[iErMatrix] = (rY->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
                 iErMatrix++;
 
                 if((iMatrix+1)%nPar==0){
@@ -841,7 +841,7 @@ Double_t chiDiByNDF;
               leg->SetMargin(0.1);
               leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
               leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
-              Int_t fitStatus = r;
+              Int_t fitStatus = rY;
               leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
               leg->Draw();
 
