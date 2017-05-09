@@ -581,7 +581,7 @@ Double_t chiDiByNDF;
             CB2Fit->SetLineColor(2);
             CB2Fit->Draw("same");
 
-            Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/100));
+            Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/50));
             if (i<6){
               p0 = fit->GetParameter("p0");
               p1 = fit->GetParameter("p1");
@@ -596,7 +596,7 @@ Double_t chiDiByNDF;
               fitBgP->SetLineStyle(1);
               fitBgP->SetLineWidth(3);
               fitBgP->Draw("same");
-              Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/100));
+              Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
 
             }else if (6<=i && i<12){
               nB = fit->GetParameter("Nb");
@@ -609,7 +609,7 @@ Double_t chiDiByNDF;
               fitBgVWG->SetLineStyle(1);
               fitBgVWG->SetLineWidth(3);
               fitBgVWG->Draw("same");
-              Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+              Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
             }else{
               p0 = fit->GetParameter("p0");
               p1 = fit->GetParameter("p1");
@@ -621,7 +621,7 @@ Double_t chiDiByNDF;
               fitBgE->SetLineWidth(3);
               fitBgE->Draw("same");
 
-              Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+              Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
             }
 
 
@@ -650,7 +650,7 @@ Double_t chiDiByNDF;
               }
             }
 
-            Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/200) );
+            Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
 
 
 
@@ -758,7 +758,7 @@ Double_t chiDiByNDF;
               CB2Fit->SetLineColor(2);
               CB2Fit->Draw("same");
 
-              Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/100));
+              Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/50));
               if (i<6){
                 p0 = fit->GetParameter("p0");
                 p1 = fit->GetParameter("p1");
@@ -774,7 +774,7 @@ Double_t chiDiByNDF;
                 fitBgP->SetLineWidth(3);
                 fitBgP->Draw("same");
 
-                Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/100));
+                Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
 
               }else if (6<=i && i<12){
                 nB = fit->GetParameter("Nb");
@@ -788,7 +788,7 @@ Double_t chiDiByNDF;
                 fitBgVWG->SetLineWidth(3);
                 fitBgVWG->Draw("same");
 
-                Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+                Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
               }else{
                 p0 = fit->GetParameter("p0");
                 p1 = fit->GetParameter("p1");
@@ -801,7 +801,7 @@ Double_t chiDiByNDF;
                 fitBgE->Draw("same");
 
 
-                Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+                Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/50));
               }
 
 
@@ -830,7 +830,7 @@ Double_t chiDiByNDF;
                 }
               }
 
-              Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/200) );
+              Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
 
 
 

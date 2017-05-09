@@ -512,7 +512,18 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
 
+    // for Background testing
+    TF1 *fitBgE = new TF1("fitBgE",expBg,2,5,3);
+    fitBgE->SetParameters(1, 1, 1);
+    // fitBgE->SetRange(3, 3.2);
 
+    TF1 *fitBgP = new TF1("fitBgP",myPol23,2,5,7);
+    fitBgP->SetParameters(1.91e4, -6.66e3, 614,-26.3, 35.8,-14.9, 2.18);//1.1e6, 2.83e5, 5.86e4,-11.7,51.1,-26, 3.8(2-5)
+    // fitBgP->SetRange(3, 3.2);
+
+    TF1 *fitBgVWG = new TF1("fitBgVWG",varWGaus,2,5,4);
+    fitBgVWG->SetParameters(240000, 1.7, -0.7, -0.2);
+    // fitBgVWG->SetRange(3, 3.2);
 
 
 
@@ -539,20 +550,22 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     araFunc->AddAtAndExpand( fit47FcnEC3, k47FcnEC3 );
     araFunc->AddAtAndExpand( fit47FcnECpp, k47FcnECpp );
 
-    F1 *fit = new TF1();
+    TF1 *fit = new TF1();
     Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB;
     TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
     TH1D *myhist[nMethod];
 
     TCanvas *cDbJPsi = new TCanvas();
 
+    Double_t chiDiByNDF;
+
     for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
-      myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
+      myhist[iMethod] = (TH1D*)hProjY->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
-      TFitResultPtr rY = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
+      TFitResultPtr r = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
 
       //Get parameters
-          fit = myhist[iMethod]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
+          fit = myhist[iMethod]->GetFunction( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() );
 
           nS = fit->GetParameter("Ns");
           miuS = fit->GetParameter("miuS");
@@ -567,8 +580,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           CB2Fit->SetLineColor(2);
           CB2Fit->Draw("same");
 
-          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/100));
-          if (i<6){
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/binNum));
+          if (iMethod<6){
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
             p2 = fit->GetParameter("p2");
@@ -583,9 +596,9 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgP->SetLineWidth(3);
             fitBgP->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/100));
+            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
 
-          }else if (6<=i && i<12){
+          }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
             miuB = fit->GetParameter("miuB");
             bA = fit->GetParameter("A");
@@ -597,7 +610,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgVWG->SetLineWidth(3);
             fitBgVWG->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -610,20 +623,20 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgE->Draw("same");
 
 
-            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
+            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
           }
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
 
-          Double_t sigOverB = (Double_t)( (Double_t)araJpsi[i]/(Double_t)araBg[i] ) ;
+          Double_t sigOverB = (Double_t)( nJpsi/nBackground ) ;
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
 
 
     //Extracting the needed Matrix
-          Int_t nPar  = ((TF1*)araFunc->UncheckedAt(i))->GetNpar();
+          Int_t nPar  = ((TF1*)araFunc->UncheckedAt(iMethod))->GetNpar();
           Double_t erMatrix[49];
           Int_t iErMatrix = 0;
 
@@ -639,7 +652,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             }
           }
 
-          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/200) );
+          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/binNum) );
 
 
 
@@ -654,9 +667,9 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
           leg->Draw();
 
-          if(i == 0){
+          if(iMethod == 0){
             cDbJPsi->Print("cDbJPsi.pdf(");
-          }else if(i == 17){
+          }else if(iMethod == 17){
             cDbJPsi->Print("cDbJPsi.pdf)");
           }else{
             cDbJPsi->Print("cDbJPsi.pdf");
