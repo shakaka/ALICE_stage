@@ -158,7 +158,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 
   TFile *file = TFile::Open( fileName.Data() );
   TFile *outFile = new TFile("NoJpsi.root", "NEW");
-
+  Int_t nx = 200;
+  const Int_t projBin = 20;
   //get counters
   AliCounterCollection *eventCounters = static_cast<AliCounterCollection*>(file->FindObjectAny("eventCounters"));
   if (!eventCounters) {
@@ -186,15 +187,18 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TH2F *hPhiDbJpsi = dynamic_cast<TH2F *>(listOfHisto ->FindObject("hPhiDbJpsi") );
 //histogram for compare each fit method
   Int_t nMethod = 18;
-  TH1F *hNoJpsiX[10];//needed to be initiate
-  TH1F *hNoJpsiY[10];
-  for (Int_t i = 0; i<10 ; i++){
+  TH1F *hNoJpsiX[projBin];//needed to be initiate
+  TH1F *hNoJpsiY[projBin];
+  TH1F *hChi2X[projBin];
+  TH1F *hChi2Y[projBin];
+  for (Int_t i = 0; i<projBin ; i++){
     hNoJpsiX[i] = new TH1F(Form("hNoJpsiX%d", i), "Number of Jpsi", nMethod, 0, nMethod);
     hNoJpsiY[i] = new TH1F(Form("hNoJpsiY%d", i), "Number of Jpsi", nMethod, 0, nMethod);
+    hChi2X[i] = new TH1F(Form("hChi2X%d", i), "Projection X Chi Square", nMethod, 0, nMethod);
+    hChi2Y[i] = new TH1F(Form("hChi2Y%d", i), "Projection Y Chi Square", nMethod, 0, nMethod);
   }
 
   //Treat the th2f to th1d by projection
-  Int_t nx = 200;
 
 
 
@@ -206,21 +210,21 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
     TH1D *hProY = hMaDbJpsi->ProjectionY("hProY", 1, nx, "e");
   }
 
-  TH1D *hArraProX[10];
+  TH1D *hArraProX[projBin];
 
   if (hMaDbJpsi) {
-    for(Int_t i = 0; i<10; i++){
-      hArraProX[i] = hMaDbJpsi->ProjectionX(Form("hArraProX%d",i+1), 1+(nx*i/10), nx*(i+1)/10, "e"); //Don't use the same name for each histogram
+    for(Int_t i = 0; i<projBin; i++){
+      hArraProX[i] = hMaDbJpsi->ProjectionX(Form("hArraProX%d",i+1), 1+(nx*i/projBin), nx*(i+1)/projBin, "e"); //Don't use the same name for each histogram
       hArraProX[i]->Rebin(4);
     }
 
   }
 
-  TH1D *hArraProY[10];
+  TH1D *hArraProY[projBin];
 
   if (hMaDbJpsi) {
-    for(Int_t i = 0; i<10; i++){
-      hArraProY[i] = hMaDbJpsi->ProjectionY(Form("hArraProY%d",i+1), 1+(nx*i/10), nx*(i+1)/10, "e"); //Don't use the same name for each histogram
+    for(Int_t i = 0; i<projBin; i++){
+      hArraProY[i] = hMaDbJpsi->ProjectionY(Form("hArraProY%d",i+1), 1+(nx*i/projBin), nx*(i+1)/projBin, "e"); //Don't use the same name for each histogram
       hArraProY[i]->Rebin(4);
     }
 
@@ -423,10 +427,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnEC3->SetParameters(10.83, -1.39, -40.42, 700, 3.09, 0.07, 1.06, 3.23, 2.55, 1.56);
   fit25FcnEC3->FixParameter(4, 3.09);
   fit25FcnEC3->FixParameter(5, 0.07);
-  fit25FcnEC3->FixParameter(6, 1.06);
-  fit25FcnEC3->FixParameter(7, 3.23);
-  fit25FcnEC3->FixParameter(8, 2.55);
-  fit25FcnEC3->FixParameter(9, 1.56);
+  fit25FcnEC3->FixParameter(6, 0.97);
+  fit25FcnEC3->FixParameter(7, 3.98);
+  fit25FcnEC3->FixParameter(8, 2.3);
+  fit25FcnEC3->FixParameter(9, 3.03);
   fit25FcnEC3->SetRange(2.2, 4.5);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -435,10 +439,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnECpp->SetParameters(10.83, -1.39, -40.42, 700, 3.09, 0.07, 1.06, 3.23, 2.55, 1.56);
   fit25FcnECpp->FixParameter(4, 3.09);
   fit25FcnECpp->FixParameter(5, 0.07);
-  fit25FcnECpp->FixParameter(6, 1.06);
-  fit25FcnECpp->FixParameter(7, 3.23);
-  fit25FcnECpp->FixParameter(8, 2.55);
-  fit25FcnECpp->FixParameter(9, 1.56);
+  fit25FcnECpp->FixParameter(6, 0.98);
+  fit25FcnECpp->FixParameter(7, 6.97);
+  fit25FcnECpp->FixParameter(8, 1.86);
+  fit25FcnECpp->FixParameter(9, 14.99);
   fit25FcnECpp->SetRange(2.2, 4.5);
 
   //2.4~4.7
@@ -460,10 +464,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnEC3->SetParameters(10.83, -1.39, -40.42, 700, 3.09, 0.07, 1.06, 3.23, 2.55, 1.56);
   fit47FcnEC3->FixParameter(4, 3.09);
   fit47FcnEC3->FixParameter(5, 0.07);
-  fit47FcnEC3->FixParameter(6, 1.06);
-  fit47FcnEC3->FixParameter(7, 3.23);
-  fit47FcnEC3->FixParameter(8, 2.55);
-  fit47FcnEC3->FixParameter(9, 1.56);
+  fit47FcnEC3->FixParameter(6, 0.97);
+  fit47FcnEC3->FixParameter(7, 3.98);
+  fit47FcnEC3->FixParameter(8, 2.3);
+  fit47FcnEC3->FixParameter(9, 3.03);
   fit47FcnEC3->SetRange(2.4, 4.7);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -472,10 +476,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnECpp->SetParameters(10.83, -1.39, -40.42, 700, 3.09, 0.07, 1.06, 3.23, 2.55, 1.56);
   fit47FcnECpp->FixParameter(4, 3.09);
   fit47FcnECpp->FixParameter(5, 0.07);
-  fit47FcnECpp->FixParameter(6, 1.06);
-  fit47FcnECpp->FixParameter(7, 3.23);
-  fit47FcnECpp->FixParameter(8, 2.55);
-  fit47FcnECpp->FixParameter(9, 1.56);
+  fit47FcnECpp->FixParameter(6, 0.98);
+  fit47FcnECpp->FixParameter(7, 6.97);
+  fit47FcnECpp->FixParameter(8, 1.86);
+  fit47FcnECpp->FixParameter(9, 14.99);
   fit47FcnECpp->SetRange(2.4, 4.7);
 
 
@@ -514,15 +518,15 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   // for Background testing
   TF1 *fitBgE = new TF1("fitBgE",expBg,2,5,3);
   fitBgE->SetParameters(1, 1, 1);
-  fitBgE->SetRange(3, 3.2);
+  // fitBgE->SetRange(3, 3.2);
 
   TF1 *fitBgP = new TF1("fitBgP",myPol23,2,5,7);
   fitBgP->SetParameters(1.91e4, -6.66e3, 614,-26.3, 35.8,-14.9, 2.18);//1.1e6, 2.83e5, 5.86e4,-11.7,51.1,-26, 3.8(2-5)
-  fitBgP->SetRange(3, 3.2);
+  // fitBgP->SetRange(3, 3.2);
 
   TF1 *fitBgVWG = new TF1("fitBgVWG",varWGaus,2,5,4);
   fitBgVWG->SetParameters(240000, 1.7, -0.7, -0.2);
-  fitBgVWG->SetRange(3, 3.2);
+  // fitBgVWG->SetRange(3, 3.2);
 
 
 
@@ -537,20 +541,19 @@ TH1D *myhist[18];
 Double_t araJpsi[18];
 Double_t araBg[18];
 Double_t araErIntegral[18];
-Double_t araChi2[18];
-TCanvas * c1[10];
-TCanvas * c2[10];
+TCanvas * c1[projBin];
+TCanvas * c2[projBin];
 
-Double_t araAvgX[10];
-Double_t araSigmaX[10];
-Double_t araSumX[10] = {0};
-Double_t araCounterX[10] ={0};
+Double_t araAvgX[projBin];
+Double_t araSigmaX[projBin];
+Double_t araSumX[projBin] = {0};
+Double_t araCounterX[projBin] ={0};
 
-
+Double_t chiDiByNDF;
 
 
 //for X projection
-  for (Int_t runs = 0 ; runs<10; runs++){
+  for (Int_t runs = 0 ; runs<projBin; runs++){
 
 
     if (hArraProX[runs]){
@@ -572,10 +575,11 @@ Double_t araCounterX[10] ={0};
             nL = fit->GetParameter("nL");
             alphaR = fit->GetParameter("alphaR");
             nR = fit->GetParameter("nR");
+            chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
 
             CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
-
-            // CB2Fit->Draw();
+            CB2Fit->SetLineColor(2);
+            CB2Fit->Draw("same");
 
             Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/100));
             if (i<6){
@@ -588,7 +592,10 @@ Double_t araCounterX[10] ={0};
               p23 = fit->GetParameter("p23");
 
               fitBgP->SetParameters(p0, p1, p2, p20, p21, p22, p23);
-
+              fitBgP->SetLineColor(4);
+              fitBgP->SetLineStyle(1);
+              fitBgP->SetLineWidth(3);
+              fitBgP->Draw("same");
               Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/100));
 
             }else if (6<=i && i<12){
@@ -598,7 +605,10 @@ Double_t araCounterX[10] ={0};
               bB = fit->GetParameter("B");
 
               fitBgVWG->SetParameters(nB, miuB, bA, bB);
-
+              fitBgVWG->SetLineColor(4);
+              fitBgVWG->SetLineStyle(1);
+              fitBgVWG->SetLineWidth(3);
+              fitBgVWG->Draw("same");
               Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
             }else{
               p0 = fit->GetParameter("p0");
@@ -606,7 +616,10 @@ Double_t araCounterX[10] ={0};
               p2 = fit->GetParameter("p2");
 
               fitBgE->SetParameters(p0, p1, p2);
-
+              fitBgE->SetLineColor(4);
+              fitBgE->SetLineStyle(1);
+              fitBgE->SetLineWidth(3);
+              fitBgE->Draw("same");
 
               Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
             }
@@ -647,39 +660,39 @@ Double_t araCounterX[10] ={0};
             leg->SetTextColor(kBlack);
             leg->SetMargin(0.1);
             leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
-            leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %f.0",nJpsi, erIntegral) , "");
+            leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
             Int_t fitStatus = r;
             leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
             leg->Draw();
 
             if(i == 0){
-              c1[runs]->Print(Form("c0%d.pdf(",runs));
+              c1[runs]->Print(Form("cX%d.pdf(",runs));
             }else if(i == 17){
-              c1[runs]->Print(Form("c0%d.pdf)",runs));
+              c1[runs]->Print(Form("cX%d.pdf)",runs));
             }else{
-              c1[runs]->Print(Form("c0%d.pdf",runs));
+              c1[runs]->Print(Form("cX%d.pdf",runs));
             }
 
             // printf("erI = %f\n", erIntegral);
-            if (fitStatus == 0){
+            if (fitStatus == 0 && chiDiByNDF <3){
               araBg[i] = nBackground;
               araJpsi[i] = nJpsi;
               araErIntegral[i] = erIntegral;
               // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
               araSumX[runs] += nJpsi;
               araCounterX[runs]++;
-              if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
-                araBg[i] = -1;
-                araJpsi[i] = -1;
-              }
+              // if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
+              //   araBg[i] = -1;
+              //   araJpsi[i] = -1;
+              // }
             }else{
               araBg[i] = -1;
               araJpsi[i] = -1;
             }
 
             hNoJpsiX[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
-
-
+            hChi2X[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+            hChi2X[runs]->SetBinContent(i+1,chiDiByNDF);
       }//loop methods = 18
 
       Double_t tmpSqrSum = 0;
@@ -699,6 +712,7 @@ Double_t araCounterX[10] ={0};
         if (araJpsi[setBin]>0){
           hNoJpsiX[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
           hNoJpsiX[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
+
         }
       }
 
@@ -710,12 +724,13 @@ Double_t araCounterX[10] ={0};
     }//if histo exist
 
     hNoJpsiX[runs]->Write(Form("NoJpsiX%d",runs));
+    hChi2X[runs]->Write(Form("ChiSqrX%d",runs));
   }//loop runs = 10
 
 
 
   //for Y projection
-    for (Int_t runs = 0 ; runs<10; runs++){
+    for (Int_t runs = 0 ; runs<projBin; runs++){
 
 
       if (hArraProY[runs]){
@@ -737,10 +752,11 @@ Double_t araCounterX[10] ={0};
               nL = fit->GetParameter("nL");
               alphaR = fit->GetParameter("alphaR");
               nR = fit->GetParameter("nR");
+              chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
 
               CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
-
-              // CB2Fit->Draw();
+              CB2Fit->SetLineColor(2);
+              CB2Fit->Draw("same");
 
               Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/100));
               if (i<6){
@@ -753,6 +769,10 @@ Double_t araCounterX[10] ={0};
                 p23 = fit->GetParameter("p23");
 
                 fitBgP->SetParameters(p0, p1, p2, p20, p21, p22, p23);
+                fitBgP->SetLineColor(4);
+                fitBgP->SetLineStyle(1);
+                fitBgP->SetLineWidth(3);
+                fitBgP->Draw("same");
 
                 Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/100));
 
@@ -763,6 +783,10 @@ Double_t araCounterX[10] ={0};
                 bB = fit->GetParameter("B");
 
                 fitBgVWG->SetParameters(nB, miuB, bA, bB);
+                fitBgVWG->SetLineColor(4);
+                fitBgVWG->SetLineStyle(1);
+                fitBgVWG->SetLineWidth(3);
+                fitBgVWG->Draw("same");
 
                 Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
               }else{
@@ -771,6 +795,10 @@ Double_t araCounterX[10] ={0};
                 p2 = fit->GetParameter("p2");
 
                 fitBgE->SetParameters(p0, p1, p2);
+                fitBgE->SetLineColor(4);
+                fitBgE->SetLineStyle(1);
+                fitBgE->SetLineWidth(3);
+                fitBgE->Draw("same");
 
 
                 Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
@@ -812,38 +840,39 @@ Double_t araCounterX[10] ={0};
               leg->SetTextColor(kBlack);
               leg->SetMargin(0.1);
               leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
-              leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %f.0",nJpsi, erIntegral) , "");
+              leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
               Int_t fitStatus = r;
               leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
               leg->Draw();
 
               if(i == 0){
-                c2[runs]->Print(Form("c1%d.pdf(",runs));
+                c2[runs]->Print(Form("cY%d.pdf(",runs));
               }else if(i == 17){
-                c2[runs]->Print(Form("c1%d.pdf)",runs));
+                c2[runs]->Print(Form("cY%d.pdf)",runs));
               }else{
-                c2[runs]->Print(Form("c1%d.pdf",runs));
+                c2[runs]->Print(Form("cY%d.pdf",runs));
               }
 
               // printf("erI = %f\n", erIntegral);
-              if (fitStatus == 0){
+              if (fitStatus == 0 && chiDiByNDF <3){
                 araBg[i] = nBackground;
                 araJpsi[i] = nJpsi;
                 araErIntegral[i] = erIntegral;
                 // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
                 araSumX[runs] += nJpsi;
                 araCounterX[runs]++;
-                if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
-                  araBg[i] = -1;
-                  araJpsi[i] = -1;
-                }
+                // if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
+                //   araBg[i] = -1;
+                //   araJpsi[i] = -1;
+                // }
               }else{
                 araBg[i] = -1;
                 araJpsi[i] = -1;
               }
 
               hNoJpsiY[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
-
+              hChi2Y[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+              hChi2Y[runs]->SetBinContent(i+1,chiDiByNDF);
 
         }//loop methods = 18
 
@@ -875,6 +904,7 @@ Double_t araCounterX[10] ={0};
       }//if histo exist
 
       hNoJpsiY[runs]->Write(Form("NoJpsiY%d",runs));
+      hChi2Y[runs]->Write(Form("ChiSqrY%d",runs));
     }//loop runs = 10
 
 
