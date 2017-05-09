@@ -858,13 +858,6 @@ Double_t chiDiByNDF;
                 araBg[i] = nBackground;
                 araJpsi[i] = nJpsi;
                 araErIntegral[i] = erIntegral;
-                // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), erIntegral);
-                araSumX[runs] += nJpsi;
-                araCounterX[runs]++;
-                // if(araJpsi[i]<araErIntegral[i]||TMath::IsNaN(erIntegral)){//if the error is greater than value
-                //   araBg[i] = -1;
-                //   araJpsi[i] = -1;
-                // }
               }else{
                 araBg[i] = -1;
                 araJpsi[i] = -1;
@@ -875,19 +868,6 @@ Double_t chiDiByNDF;
               hChi2Y[runs]->SetBinContent(i+1,chiDiByNDF);
 
         }//loop methods = 18
-
-        Double_t tmpSqrSum = 0;
-
-        araAvgX[runs] = araSumX[runs]/araCounterX[runs];
-
-        for (Int_t getSigma = 0; getSigma <18; getSigma++){
-          if (araJpsi[getSigma]>0){
-            tmpSqrSum += araJpsi[getSigma]*araJpsi[getSigma];
-          }
-        }
-
-        araSigmaX[runs] = TMath::Sqrt(tmpSqrSum/araCounterX[runs]);
-
 
         for (Int_t setBin = 0; setBin <18; setBin++){
           if (araJpsi[setBin]>0){
