@@ -159,7 +159,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TFile *file = TFile::Open( fileName.Data() );
   TFile *outFile = new TFile("NoJpsi.root", "NEW");
   Int_t nx = 200;
-  const Int_t projBin = 30;
+  const Int_t projBin = 40;
   //get counters
   AliCounterCollection *eventCounters = static_cast<AliCounterCollection*>(file->FindObjectAny("eventCounters"));
   if (!eventCounters) {
