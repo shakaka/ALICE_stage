@@ -191,6 +191,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TH1F *hNoJpsiY[projBin];
   TH1F *hChi2X[projBin];
   TH1F *hChi2Y[projBin];
+
+  TH1F *hSOBX[projBin];
+  TH1F *hSOBY[projBin];
+
   for (Int_t i = 0; i<projBin ; i++){
     hNoJpsiX[i] = new TH1F(Form("hNoJpsiX%d", i), "Number of Jpsi", nMethod, 0, nMethod);
     hNoJpsiY[i] = new TH1F(Form("hNoJpsiY%d", i), "Number of Jpsi", nMethod, 0, nMethod);
@@ -691,6 +695,9 @@ Double_t chiDiByNDF;
             hNoJpsiX[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
             hChi2X[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
             hChi2X[runs]->SetBinContent(i+1,chiDiByNDF);
+
+            hSOBX[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+            hSOBX[runs]->SetBinContent(i+1,sigOverB);
       }//loop methods = 18
 
       Double_t tmpSqrSum = 0;
@@ -862,6 +869,9 @@ Double_t chiDiByNDF;
               hNoJpsiY[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
               hChi2Y[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
               hChi2Y[runs]->SetBinContent(i+1,chiDiByNDF);
+
+              hSOBY[runs]->GetXaxis()->SetBinLabel(i+1,((TF1*)araFunc->UncheckedAt(i))->GetName());
+              hSOBY[runs]->SetBinContent(i+1,sigOverB);
 
         }//loop methods = 18
 

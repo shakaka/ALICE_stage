@@ -700,8 +700,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           leg->SetLineColor(0);
           leg->SetTextColor(kBlack);
           leg->SetMargin(0.1);
-          leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
-          leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
+          leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
+          leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %.4f",nJpsi, erIntegral) , "");
           Int_t fitStatus = rX;
           leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
           leg->Draw();
@@ -821,8 +821,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           leg->SetLineColor(0);
           leg->SetTextColor(kBlack);
           leg->SetMargin(0.1);
-          leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
-          leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
+          leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
+          leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %.4f",nJpsi, erIntegral) , "");
           Int_t fitStatus = rY;
           leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
           leg->Draw();
