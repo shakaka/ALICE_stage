@@ -157,7 +157,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
   Int_t nx = 200;
-  const Int_t nProjBin = 40;
+  const Int_t nProjBin = 30;
   const Int_t nMethod = 18;
   Double_t araNum[nMethod];
   Double_t araErr[nMethod];

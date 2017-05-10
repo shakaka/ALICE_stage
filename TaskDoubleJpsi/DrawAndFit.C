@@ -159,7 +159,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TFile *file = TFile::Open( fileName.Data() );
   TFile *outFile = new TFile("NoJpsi.root", "NEW");
   Int_t nx = 200;
-  const Int_t projBin = 40;
+  const Int_t projBin = 30;
   //get counters
   AliCounterCollection *eventCounters = static_cast<AliCounterCollection*>(file->FindObjectAny("eventCounters"));
   if (!eventCounters) {
@@ -200,6 +200,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
     hNoJpsiY[i] = new TH1F(Form("hNoJpsiY%d", i), "Number of Jpsi", nMethod, 0, nMethod);
     hChi2X[i] = new TH1F(Form("hChi2X%d", i), "Projection X Chi Square", nMethod, 0, nMethod);
     hChi2Y[i] = new TH1F(Form("hChi2Y%d", i), "Projection Y Chi Square", nMethod, 0, nMethod);
+    hSOBX[i] = new TH1F(Form("hSOBX%d", i), "Projection X Signal Over Background", nMethod, 0, nMethod);
+    hSOBY[i] = new TH1F(Form("hSOBY%d", i), "Projection Y Signal Over Background", nMethod, 0, nMethod);
   }
 
   //Treat the th2f to th1d by projection
@@ -730,6 +732,7 @@ Double_t chiDiByNDF;
 
     hNoJpsiX[runs]->Write(Form("NoJpsiX%d",runs));
     hChi2X[runs]->Write(Form("ChiSqrX%d",runs));
+    hSOBX[runs]->Write(Form("hSOBX%d",runs));
   }//loop runs = 10
 
 
@@ -891,6 +894,7 @@ Double_t chiDiByNDF;
 
       hNoJpsiY[runs]->Write(Form("NoJpsiY%d",runs));
       hChi2Y[runs]->Write(Form("ChiSqrY%d",runs));
+      hSOBY[runs]->Write(Form("hSOBY%d",runs));
     }//loop runs = 10
 
 
