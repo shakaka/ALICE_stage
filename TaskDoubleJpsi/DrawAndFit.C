@@ -159,7 +159,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TFile *file = TFile::Open( fileName.Data() );
   TFile *outFile = new TFile("NoJpsi.root", "NEW");
   Int_t nx = 200;
-  const Int_t projBin = 20;
+  const Int_t projBin = 30;
   //get counters
   AliCounterCollection *eventCounters = static_cast<AliCounterCollection*>(file->FindObjectAny("eventCounters"));
   if (!eventCounters) {
@@ -626,9 +626,7 @@ Double_t chiDiByNDF;
 
 
             // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-
-            Double_t sigOverB = (Double_t)( (Double_t)araJpsi[i]/(Double_t)araBg[i] ) ;
-
+            Double_t sigOverB = (Double_t)( (Double_t)nJpsi/(Double_t)nBackground ) ;
             // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
 
@@ -806,9 +804,7 @@ Double_t chiDiByNDF;
 
 
               // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-              if(nBackground!=0)
-              Double_t sigOverB = ( (Double_t)nJpsi/(Double_t)nBackground ) ;
-
+              Double_t sigOverB = ( (Double_t)nJpsi/(Double_t)nBackground );
               // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
 

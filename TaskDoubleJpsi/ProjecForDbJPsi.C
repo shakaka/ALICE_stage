@@ -157,7 +157,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
   Int_t nx = 200;
-  const Int_t nProjBin = 20;
+  const Int_t nProjBin = 30;
   const Int_t nMethod = 18;
   Double_t araNum[nMethod];
   Double_t araErr[nMethod];
@@ -168,6 +168,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
   Double_t araErrY[nProjBin];
   Double_t araSyErX[nProjBin];
   Double_t araSyErY[nProjBin];
+
+  Double_t sumX, sumY;
 
   TH1F *hProjX= new TH1F("hProjX", "J/Psi number of X projection", nProjBin, 2, 5);
   TH1F *hProjY= new TH1F("hProjY", "J/Psi number of Y projection", nProjBin, 2, 5);
@@ -215,7 +217,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     hProjX->SetBinContent(runs+1, araSumX[runs]);
     hProjX->SetBinError(runs+1, araSyErX[runs]);
 
-
+    sumX += araSumX[runs];
 
 
 
@@ -257,11 +259,14 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
   }
   hProjY->SetBinContent(runs+1, araSumY[runs]);
   hProjY->SetBinError(runs+1, araSyErY[runs]);
+
+  sumY += araSumY[runs];
   }
 
-  Double_t newBins[12] = {2.,2.6,2.75,2.9,3.05,3.2,3.35,3.5,3.65,3.8,4.4,5.};
-  TH1 *hProjXRB = hProjX->Rebin(11,"hProjXRB",newBins);
-  TH1 *hProjYRB = hProjY->Rebin(11,"hProjYRB",newBins);
+  // Double_t newBins[12] = {2.,2.6,2.75,2.9,3.05,3.2,3.35,3.5,3.65,3.8,4.4,5.};
+  // Double_t newBins[15] = {2.4,2.8,2.9,3.,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,4.2,4.6,5.};
+  // TH1 *hProjXRB = hProjX->Rebin(14,"hProjXRB",newBins);
+  // TH1 *hProjYRB = hProjY->Rebin(14,"hProjYRB",newBins);
 
 
 
@@ -281,6 +286,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnPC4->FixParameter(11, 3.23);
     fit25FcnPC4->FixParameter(12, 2.55);
     fit25FcnPC4->FixParameter(13, 1.56);
+    fit25FcnPC4->SetParLimits(7, 0, 1e6);
     fit25FcnPC4->SetRange(2.2, 4.5);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -296,6 +302,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnPC3->FixParameter(11, 3.98);
     fit25FcnPC3->FixParameter(12, 2.3);
     fit25FcnPC3->FixParameter(13, 3.03);
+    fit25FcnPC3->SetParLimits(7, 0, 1e6);
     fit25FcnPC3->SetRange(2.2, 4.5);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -311,6 +318,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnPCpp->FixParameter(11, 6.97);
     fit25FcnPCpp->FixParameter(12, 1.86);
     fit25FcnPCpp->FixParameter(13, 14.99);
+    fit25FcnPCpp->SetParLimits(7, 0, 1e6);
     fit25FcnPCpp->SetRange(2.2, 4.5);
 
   //2.4~4.7
@@ -327,6 +335,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnPC4->FixParameter(11, 3.23);
     fit47FcnPC4->FixParameter(12, 2.55);
     fit47FcnPC4->FixParameter(13, 1.56);
+    fit47FcnPC4->SetParLimits(7, 0, 1e6);
     fit47FcnPC4->SetRange(2.4, 4.7);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -342,6 +351,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnPC3->FixParameter(11, 3.98);
     fit47FcnPC3->FixParameter(12, 2.3);
     fit47FcnPC3->FixParameter(13, 3.03);
+    fit47FcnPC3->SetParLimits(7, 0, 1e6);
     fit47FcnPC3->SetRange(2.4, 4.7);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -357,6 +367,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnPCpp->FixParameter(11, 6.97);
     fit47FcnPCpp->FixParameter(12, 1.86);
     fit47FcnPCpp->FixParameter(13, 14.99);
+    fit47FcnPCpp->SetParLimits(7, 0, 1e6);
     fit47FcnPCpp->SetRange(2.4, 4.7);
 
 
@@ -375,6 +386,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnVC4->FixParameter(8, 3.23);
     fit25FcnVC4->FixParameter(9, 2.55);
     fit25FcnVC4->FixParameter(10, 1.56);
+    fit25FcnVC4->SetParLimits(4, 0, 1e6);
     fit25FcnVC4->SetRange(2.2, 4.5);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -387,6 +399,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnVC3->FixParameter(8, 3.98);
     fit25FcnVC3->FixParameter(9, 2.3);
     fit25FcnVC3->FixParameter(10, 3.03);
+    fit25FcnVC3->SetParLimits(4, 0, 1e6);
     fit25FcnVC3->SetRange(2.2, 4.5);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -399,6 +412,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnVCpp->FixParameter(8, 6.97);
     fit25FcnVCpp->FixParameter(9, 1.86);
     fit25FcnVCpp->FixParameter(10, 14.99);
+    fit25FcnVCpp->SetParLimits(4, 0, 1e6);
     fit25FcnVCpp->SetRange(2.2, 4.5);
 
   //2.4~4.7
@@ -412,6 +426,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnVC4->FixParameter(8, 3.23);
     fit47FcnVC4->FixParameter(9, 2.55);
     fit47FcnVC4->FixParameter(10, 1.56);
+    fit47FcnVC4->SetParLimits(4, 0, 1e6);
     fit47FcnVC4->SetRange(2.4, 4.7);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -424,6 +439,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnVC3->FixParameter(8, 3.98);
     fit47FcnVC3->FixParameter(9, 2.3);
     fit47FcnVC3->FixParameter(10, 3.03);
+    fit47FcnVC3->SetParLimits(4, 0, 1e6);
     fit47FcnVC3->SetRange(2.4, 4.7);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -436,6 +452,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnVCpp->FixParameter(8, 6.97);
     fit47FcnVCpp->FixParameter(9, 1.86);
     fit47FcnVCpp->FixParameter(10, 14.99);
+    fit47FcnVCpp->SetParLimits(4, 0, 1e6);
     fit47FcnVCpp->SetRange(2.4, 4.7);
 
 
@@ -455,6 +472,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnEC4->FixParameter(8, 2.55);
     fit25FcnEC4->FixParameter(9, 1.56);
     fit25FcnEC4->SetParLimits(0, 1, 10);
+    fit25FcnEC4->SetParLimits(3, 0, 1e6);
     fit25FcnEC4->SetRange(2.2, 4.5);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -468,6 +486,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnEC3->FixParameter(8, 2.55);
     fit25FcnEC3->FixParameter(9, 1.56);
     fit25FcnEC3->SetParLimits(0, 1, 10);
+    fit25FcnEC3->SetParLimits(3, 0, 1e6);
     fit25FcnEC3->SetRange(2.2, 4.5);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -481,6 +500,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit25FcnECpp->FixParameter(8, 2.55);
     fit25FcnECpp->FixParameter(9, 1.56);
     fit25FcnECpp->SetParLimits(0, 1, 10);
+    fit25FcnECpp->SetParLimits(3, 0, 1e6);
     fit25FcnECpp->SetRange(2.2, 4.5);
 
     //2.4~4.7
@@ -495,6 +515,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnEC4->FixParameter(8, 2.55);
     fit47FcnEC4->FixParameter(9, 1.56);
     fit47FcnEC4->SetParLimits(0, 1, 10);
+    fit47FcnEC4->SetParLimits(3, 0, 1e6);
     fit47FcnEC4->SetRange(2.4, 4.7);
 
     //GEANT3 0.97,3.98,2.3,3.03
@@ -508,6 +529,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnEC3->FixParameter(8, 2.55);
     fit47FcnEC3->FixParameter(9, 1.56);
     fit47FcnEC3->SetParLimits(0, 1, 10);
+    fit47FcnEC3->SetParLimits(3, 0, 1e6);
     fit47FcnEC3->SetRange(2.4, 4.7);
 
     //pp13TeV0.98,6.97,1.86,14.99
@@ -521,6 +543,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     fit47FcnECpp->FixParameter(8, 2.55);
     fit47FcnECpp->FixParameter(9, 1.56);
     fit47FcnECpp->SetParLimits(0, 1, 10);
+    fit47FcnECpp->SetParLimits(3, 0, 1e6);
     fit47FcnECpp->SetRange(2.4, 4.7);
 
 
@@ -568,16 +591,16 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB;
     TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
     TH1D *myhist[nMethod];
-
     TCanvas *cDbJPsiX = new TCanvas();
-
-
     Double_t chiDiByNDF;
 
     for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
-      myhist[iMethod] = (TH1D*)hProjXRB->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
+      myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
       TFitResultPtr rX = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
+      myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu1} [GeV]");
+      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
+
 
       //Get parameters
           fit = myhist[iMethod]->GetFunction( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() );
@@ -595,7 +618,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           CB2Fit->SetLineColor(2);
           CB2Fit->Draw("same");
 
-          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/binNum));
+          Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/nProjBin));
           if (iMethod<6){
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -611,7 +634,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgP->SetLineWidth(3);
             fitBgP->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
@@ -625,7 +648,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgVWG->SetLineWidth(3);
             fitBgVWG->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -638,13 +661,14 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgE->Draw("same");
 
 
-            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
           }
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-
-          Double_t sigOverB = (Double_t)( nJpsi/nBackground ) ;
+          // Double_t sigOverB= -1;
+          // if(nBackground!=0)
+          sigOverB = (Double_t)( nJpsi/nBackground ) ;
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
@@ -667,7 +691,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             }
           }
 
-          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/binNum) );
+          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/nProjBin) );
 
 
 
@@ -694,10 +718,12 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TCanvas *cDbJPsiY = new TCanvas();
 
     for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
-      myhist[iMethod] = (TH1D*)hProjYRB->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
+      myhist[iMethod] = (TH1D*)hProjY->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
       TFitResultPtr rY = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
 
+      myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu2} [GeV]");
+      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
       //Get parameters
           fit = myhist[iMethod]->GetFunction( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() );
 
@@ -730,7 +756,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgP->SetLineWidth(3);
             fitBgP->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
@@ -744,7 +770,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgVWG->SetLineWidth(3);
             fitBgVWG->Draw("same");
 
-            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -757,12 +783,12 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgE->Draw("same");
 
 
-            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/binNum));
+            Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
           }
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-
+          // if(nBackground!=0)
           Double_t sigOverB = (Double_t)( nJpsi/nBackground ) ;
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
@@ -786,7 +812,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             }
           }
 
-          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/binNum) );
+          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/nProjBin) );
 
 
 
@@ -810,6 +836,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           }
 
     }
-
+    printf("sum of x = %d\n", sumX);
+    printf("sum of y = %d\n", sumY);
 
 }
