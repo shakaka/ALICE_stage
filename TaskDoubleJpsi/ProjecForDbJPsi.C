@@ -31,7 +31,7 @@
 #include <AliCounterCollection.h>
 
 
-//For background
+//For background expBg myPol23 varWGaus
 //
 // Exeponential background function
 Double_t expBg(Double_t *x, Double_t *par) {
@@ -604,12 +604,12 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TH1F *hClBglX = new TH1F("hClBglX","Histo for rebuild background of X", nProjBin, 2, 5);
     TH1F *hClBglY = new TH1F("hClBglY","Histo for rebuild backdround of Y", nProjBin, 2, 5);
 
-    Int_t ranData = 5000;
+    Int_t ranData = 30;
 
-    for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
+    for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
       myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
-      TFitResultPtr rX = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
+      TFitResultPtr rX = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SRL");
       myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu1} [GeV]");
       myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
 
@@ -627,6 +627,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           nR = fit->GetParameter("nR");
           chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
 
+          Int_t fitStatus = rX;
+
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
           CB2Fit->SetLineColor(2);
           CB2Fit->Draw("same");
@@ -634,7 +636,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/nProjBin));
 
           //Try to rebuid the histogram of signal
-          hClSglX->FillRandom( "CB2Fit" ,ranData);
+          if (fitStatus==0)
+          hClSglX->FillRandom( "CB2Fit" ,1);
 
 
 
@@ -656,6 +659,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
+            if (fitStatus==0)
             hClBglX->FillRandom( "fitBgP" ,ranData);
 
           }else if (6<=iMethod && iMethod<12){
@@ -672,6 +676,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
+            if (fitStatus==0)
             hClBglX->FillRandom( "fitBgVWG" ,ranData);
           }else{
             p0 = fit->GetParameter("p0");
@@ -687,19 +692,37 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
+            if (fitStatus==0)
             hClBglX->FillRandom( "fitBgE" ,ranData);
           }
 
 
           //done reconstruct the signal and background
           //
-          TLimitDataSource* mydatasource = new TLimitDataSource(hClSglX,hClBglX,myhist[iMethod]);
-          TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
+
+          if (fitStatus==0){
+
+            // hClSglX->Draw();
+            // hClBglX->Draw();
+
+            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglX,hClBglX,myhist[iMethod]);
+            TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
+
+            std::cout << "  CLs    : " << myconfidence->CLs()  << std::endl;
+            std::cout << "  CLsb   : " << myconfidence->CLsb() << std::endl;
+            std::cout << "  CLb    : " << myconfidence->CLb()  << std::endl;
+            std::cout << "< CLs >  : " << myconfidence->GetExpectedCLs_b()  << std::endl;
+            std::cout << "< CLsb > : " << myconfidence->GetExpectedCLsb_b() << std::endl;
+            std::cout << "< CLb >  : " << myconfidence->GetExpectedCLb_b()  << std::endl;
+            delete myconfidence;
+            delete mydatasource;
+          }
+
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-          // Double_t sigOverB= -1;
-          // if(nBackground!=0)
+          Double_t sigOverB= -1;
+          if(nBackground!=0)
           sigOverB = (Double_t)( nJpsi/nBackground ) ;
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
@@ -734,7 +757,6 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           leg->SetMargin(0.1);
           leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
           leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %.4f",nJpsi, erIntegral) , "");
-          Int_t fitStatus = rX;
           leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
           leg->Draw();
 
@@ -749,10 +771,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     }
     TCanvas *cDbJPsiY = new TCanvas();
 
-    for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
+    for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
       myhist[iMethod] = (TH1D*)hProjY->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
-      TFitResultPtr rY = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
+      TFitResultPtr rY = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SRL");
 
       myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu2} [GeV]");
       myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
@@ -768,9 +790,15 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           nR = fit->GetParameter("nR");
           chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
 
+          Int_t fitStatus = rY;
+
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
           CB2Fit->SetLineColor(2);
           CB2Fit->Draw("same");
+
+          if (fitStatus==0)
+          hClSglY->FillRandom( "CB2Fit" ,1);
+
 
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/binNum));
           if (iMethod<6){
@@ -790,6 +818,9 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
+            if (fitStatus==0)
+            hClBglY->FillRandom( "fitBgP" ,ranData);
+
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
             miuB = fit->GetParameter("miuB");
@@ -803,6 +834,9 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgVWG->Draw("same");
 
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
+
+            if (fitStatus==0)
+            hClBglY->FillRandom( "fitBgVWG" ,ranData);
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -816,12 +850,30 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
+
+            if (fitStatus==0)
+            hClBglY->FillRandom( "fitBgE" ,ranData);
           }
 
 
+          if (fitStatus==0){
+            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglY,hClBglY,myhist[iMethod]);
+            TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
+
+            std::cout << "  CLs    : " << myconfidence->CLs()  << std::endl;
+            std::cout << "  CLsb   : " << myconfidence->CLsb() << std::endl;
+            std::cout << "  CLb    : " << myconfidence->CLb()  << std::endl;
+            std::cout << "< CLs >  : " << myconfidence->GetExpectedCLs_b()  << std::endl;
+            std::cout << "< CLsb > : " << myconfidence->GetExpectedCLsb_b() << std::endl;
+            std::cout << "< CLb >  : " << myconfidence->GetExpectedCLb_b()  << std::endl;
+            delete myconfidence;
+            delete mydatasource;
+          }
+
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-          // if(nBackground!=0)
-          Double_t sigOverB = (Double_t)( nJpsi/nBackground ) ;
+          Double_t sigOverB = -1;
+          if(nBackground!=0)
+          sigOverB = (Double_t)( nJpsi/nBackground ) ;
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
@@ -855,7 +907,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           leg->SetMargin(0.1);
           leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
           leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %.4f",nJpsi, erIntegral) , "");
-          Int_t fitStatus = rY;
+
           leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
           leg->Draw();
 
