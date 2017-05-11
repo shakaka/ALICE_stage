@@ -604,6 +604,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TH1F *hClBglX = new TH1F("hClBglX","Histo for rebuild background of X", nProjBin, 2, 5);
     TH1F *hClBglY = new TH1F("hClBglY","Histo for rebuild backdround of Y", nProjBin, 2, 5);
 
+    Double_t fClSglX, fClBglX, fClSglY, fClBglY;
+
     Int_t ranData = 30;
 
     for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
@@ -637,7 +639,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
           //Try to rebuid the histogram of signal
           if (fitStatus==0)
-          hClSglX->FillRandom( "CB2Fit" ,1);
+          // hClSglX->FillRandom( "CB2Fit" ,1);
+          fClSglX = CrystalBallExtended;
 
 
 
@@ -660,7 +663,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglX->FillRandom( "fitBgP" ,ranData);
+            // hClBglX->FillRandom( "fitBgP" ,ranData);
+            fClBglX = myPol23;
 
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
@@ -677,7 +681,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglX->FillRandom( "fitBgVWG" ,ranData);
+            // hClBglX->FillRandom( "fitBgVWG" ,ranData);
+            fClBglX = varWGaus;
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -693,7 +698,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglX->FillRandom( "fitBgE" ,ranData);
+            // hClBglX->FillRandom( "fitBgE" ,ranData);
+            fClBglX = expBg;
           }
 
 
@@ -705,7 +711,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             // hClSglX->Draw();
             // hClBglX->Draw();
 
-            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglX,hClBglX,myhist[iMethod]);
+            TLimitDataSource* mydatasource = new TLimitDataSource(fClSglX,fClBglX,myhist[iMethod]);
             TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
 
             std::cout << "  CLs    : " << myconfidence->CLs()  << std::endl;
