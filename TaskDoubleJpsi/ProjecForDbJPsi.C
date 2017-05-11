@@ -20,8 +20,13 @@
 #include "TSpectrum.h"
 #include "TStyle.h"
 #include "TPaveText.h"
+
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
+
+#include "TConfidenceLevel.h"
+#include "TLimit.h"
+#include "TLimitDataSource.h"
 //PWG includes
 #include <AliCounterCollection.h>
 
@@ -594,12 +599,20 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TCanvas *cDbJPsiX = new TCanvas();
     Double_t chiDiByNDF;
 
+    TH1F *hClSglX = new TH1F("hClSglX","Histo for rebuild signal of X", nProjBin, 2, 5);
+    TH1F *hClSglY = new TH1F("hClSglY","Histo for rebuild signal of Y", nProjBin, 2, 5);
+    TH1F *hClBglX = new TH1F("hClBglX","Histo for rebuild background of X", nProjBin, 2, 5);
+    TH1F *hClBglY = new TH1F("hClBglY","Histo for rebuild backdround of Y", nProjBin, 2, 5);
+
+    Int_t ranData = 5000;
+
     for(iMethod = 0 ; iMethod < nMethod ; iMethod++){
       myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
       TFitResultPtr rX = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SR");
       myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu1} [GeV]");
       myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
+
 
 
       //Get parameters
@@ -619,6 +632,13 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           CB2Fit->Draw("same");
 
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/nProjBin));
+
+          //Try to rebuid the histogram of signal
+          hClSglX->FillRandom( "CB2Fit" ,ranData);
+
+
+
+
           if (iMethod<6){
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -636,6 +656,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
+            hClBglX->FillRandom( "fitBgP" ,ranData);
+
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
             miuB = fit->GetParameter("miuB");
@@ -649,6 +671,8 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             fitBgVWG->Draw("same");
 
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
+
+            hClBglX->FillRandom( "fitBgVWG" ,ranData);
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -662,7 +686,15 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
+
+            hClBglX->FillRandom( "fitBgE" ,ranData);
           }
+
+
+          //done reconstruct the signal and background
+          //
+          TLimitDataSource* mydatasource = new TLimitDataSource(hClSglX,hClBglX,myhist[iMethod]);
+          TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);

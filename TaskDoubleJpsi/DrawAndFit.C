@@ -569,7 +569,7 @@ Double_t chiDiByNDF;
       for (Int_t i = 0; i<18; i++){
         myhist[i] = (TH1D*)hArraProX[runs]->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
         gStyle->SetOptFit();
-        TFitResultPtr rX = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
+        TFitResultPtr rX = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SRL");
 
         //Get parameters
             fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
@@ -748,7 +748,7 @@ Double_t chiDiByNDF;
         for (Int_t i = 0; i<18; i++){
           myhist[i] = (TH1D*)hArraProY[runs]->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
           gStyle->SetOptFit();
-          TFitResultPtr rY = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
+          TFitResultPtr rY = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SRL");
 
           //Get parameters
               fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
