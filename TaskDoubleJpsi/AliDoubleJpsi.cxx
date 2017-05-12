@@ -155,6 +155,10 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   fEventCounters->AddRubric("trigger",1000000);
   fEventCounters->AddRubric("run",1000000);
   fEventCounters->AddRubric("selected","yes/no");
+  fEventCounters->AddRubric("numMu",1000000);
+  fEventCounters->AddRubric("numDiMu",1000000);
+
+
   fEventCounters->Init();
 
 
@@ -189,12 +193,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
   TString fillName;
 
-  fillName = Form("trigger:any/run:%d/selected:%s",fCurrentRunNumber,selected.Data());
+  fillName = Form("trigger:any/run:%d/selected:%s/numMu:Sum/numDiMu:Non",fCurrentRunNumber,selected.Data());
   fEventCounters->Count(fillName.Data());
 
   for ( Int_t iTrig = 0; iTrig < trig->GetEntries(); iTrig++ ) {
     TString triggerName = ( (TObjString*) trig->At(iTrig) )->GetString();
-    fillName = Form("trigger:%s/run:%d/selected:%s",triggerName.Data(),fCurrentRunNumber,selected.Data());
+    fillName = Form("trigger:%s/run:%d/selected:%s/numMu:Sum/numDiMu:Non",triggerName.Data(),fCurrentRunNumber,selected.Data());
     fEventCounters->Count(fillName.Data());
   }
 
@@ -209,6 +213,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
   Int_t nTracks = 0;
   nTracks = fAODEvent->GetNumberOfTracks();
 
+
+  Int_t counterDiMu = 0;
+  Int_t counterMu = 0;
   //Loop to match up 2 dimuons
   for (Int_t iTrack = 0; iTrack < nTracks; iTrack++) {
     AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(iTrack);
@@ -217,7 +224,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
       continue;
     }
     if ( ! fMuonTrackCuts->IsSelected(track1) ) continue;
-
+    counterMu++;
 
     for (Int_t jTrack = iTrack+1; jTrack < nTracks; jTrack++) {
       AliAODTrack *track2 = (AliAODTrack*) fAODEvent->GetTrack(jTrack);
@@ -248,7 +255,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
           if ( ! fMuonTrackCuts->IsSelected(track4) ) continue;
 
           Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
-          TLorentzVector lvMuon1, lvMuon2, lvDimuon, lvMuon3, lvMuon4, lvDimuon2, lvTemp;
+          TLorentzVector lvMuon1, lvMuon2, lvMuon3, lvMuon4, lvDimuon, lvDimuon2, lvDimuon3, lvDimuon4, lvTemp;
+
+          Bool_t getDiMu = 0;
 
           Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
           Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
@@ -262,99 +271,211 @@ void AliDoubleJpsi::UserExec(Option_t *)
           //Choose 12, 34
           if(track1->Charge()*track2->Charge()==-1){
             if (track3->Charge()*track4->Charge()==-1){
-              //Building Lorentz vetors
+
+              getDiMu = kTRUE;
+
               lvDimuon = lvMuon1 + lvMuon2;
               lvDimuon2= lvMuon3 + lvMuon4;
 
-              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
-              // }
+              if(track1->Charge()*track3->Charge()==-1){
+                if (track2->Charge()*track4->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon3;
+                  lvDimuon4 = lvMuon2 + lvMuon4;
+                }
+              }
+
+              if(track1->Charge()*track4->Charge()==-1){
+                if (track2->Charge()*track3->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon4;
+                  lvDimuon4 = lvMuon2 + lvMuon3;
+                }
+              }
             }
           }
           //Choose 13, 24
           if(track1->Charge()*track3->Charge()==-1){
             if (track2->Charge()*track4->Charge()==-1){
-              //Building Lorentz vetors
+
+              getDiMu = kTRUE;
+
               lvDimuon = lvMuon1 + lvMuon3;
               lvDimuon2= lvMuon2 + lvMuon4;
 
-              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
-              // }
+              if(track1->Charge()*track2->Charge()==-1){
+                if (track3->Charge()*track4->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon2;
+                  lvDimuon4 = lvMuon3 + lvMuon4;
+                }
+              }
+
+              if(track1->Charge()*track4->Charge()==-1){
+                if (track2->Charge()*track3->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon4;
+                  lvDimuon4 = lvMuon2 + lvMuon3;
+                }
+              }
             }
           }
           //Choose 14,23
           if(track1->Charge()*track4->Charge()==-1){
             if (track2->Charge()*track3->Charge()==-1){
-              //Building Lorentz vetors
+
+              getDiMu = kTRUE;
+
               lvDimuon = lvMuon1 + lvMuon4;
               lvDimuon2= lvMuon2 + lvMuon3;
 
-              // if(lvDimuon.Pt()>lvDimuon2.Pt()){
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
-              // }else{
-              //   ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
-              // }
+              if(track1->Charge()*track2->Charge()==-1){
+                if (track3->Charge()*track4->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon2;
+                  lvDimuon4 = lvMuon3 + lvMuon4;
+                }
+              }
+
+              if(track1->Charge()*track3->Charge()==-1){
+                if (track2->Charge()*track4->Charge()==-1){
+                  lvDimuon3 = lvMuon1 + lvMuon3;
+                  lvDimuon4 = lvMuon2 + lvMuon4;
+                }
+              }
             }
           }
 
           //Getting data wanted
 
-          Double_t ptDiMu1 = lvDimuon.Pt();
-          Double_t ptDiMu2 = lvDimuon2.Pt();
 
-          if(ptDiMu1>ptDiMu2){
-            Double_t temp = ptDiMu1;
-            ptDiMu1 = ptDiMu2;
-            ptDiMu2 = temp;
+          if(getDiMu == kTRUE){
 
-            lvTemp = lvDimuon;
-            lvDimuon = lvDimuon2;
-            lvDimuon2 = lvTemp;
+            counterDiMu++;
+
+            Double_t ptDiMu1 = lvDimuon.Pt();
+            Double_t ptDiMu2 = lvDimuon2.Pt();
+            Double_t ptDiMu3 = lvDimuon3.Pt();
+            Double_t ptDiMu4 = lvDimuon4.Pt();
+
+            if(ptDiMu1>ptDiMu2){
+              Double_t temp = ptDiMu1;
+              ptDiMu1 = ptDiMu2;
+              ptDiMu2 = temp;
+
+              lvTemp = lvDimuon;
+              lvDimuon = lvDimuon2;
+              lvDimuon2 = lvTemp;
+            }
+
+            if(ptDiMu3>ptDiMu4){
+              Double_t temp = ptDiMu3;
+              ptDiMu3 = ptDiMu4;
+              ptDiMu4 = temp;
+
+              lvTemp = lvDimuon3;
+              lvDimuon3 = lvDimuon4;
+              lvDimuon4 = lvTemp;
+            }
+
+            Double_t maDiMu1 = lvDimuon.M();
+            Double_t maDiMu2 = lvDimuon2.M();
+            Double_t maDiMu3 = lvDimuon3.M();
+            Double_t maDiMu4 = lvDimuon4.M();
+
+
+            Double_t phiDiMu1 = lvDimuon.Phi();
+            Double_t phiDiMu2 = lvDimuon2.Phi();
+            Double_t phiDiMu3 = lvDimuon3.Phi();
+            Double_t phiDiMu4 = lvDimuon4.Phi();
+
+            Double_t plDiMu1 = TMath::Sqrt((lvDimuon.P()*lvDimuon.P())-(lvDimuon.Pt()*lvDimuon.Pt()));
+            Double_t plDiMu2 = TMath::Sqrt((lvDimuon2.P()*lvDimuon2.P())-(lvDimuon2.Pt()*lvDimuon2.Pt()));
+            Double_t yDiMu1 = TMath::Log((lvDimuon.E()+plDiMu1)/(lvDimuon.E()-plDiMu1))/2;
+            Double_t yDiMu2 = TMath::Log((lvDimuon2.E()+plDiMu2)/(lvDimuon2.E()-plDiMu2))/2;
+
+            Double_t plDiMu3 = TMath::Sqrt((lvDimuon3.P()*lvDimuon3.P())-(lvDimuon3.Pt()*lvDimuon3.Pt()));
+            Double_t plDiMu4 = TMath::Sqrt((lvDimuon4.P()*lvDimuon4.P())-(lvDimuon4.Pt()*lvDimuon4.Pt()));
+            Double_t yDiMu3 = TMath::Log((lvDimuon3.E()+plDiMu3)/(lvDimuon3.E()-plDiMu3))/2;
+            Double_t yDiMu4 = TMath::Log((lvDimuon4.E()+plDiMu4)/(lvDimuon4.E()-plDiMu4))/2;
+
+
+
+
+            ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
+            // ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu1, ptDiMu2);
+            // ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu1, yDiMu2);
+            // ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu1, phiDiMu2);
+            // ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
+
+            ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu1);
+            ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu2);
+
+
+
+            ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu3, maDiMu4);
+            // ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu3, ptDiMu4);
+            // ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu3, yDiMu4);
+            // ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
+
+            ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu3, phiDiMu4);
+            // ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
+
+            ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu3);
+            ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu4);
           }
 
-          Double_t maDiMu1 = lvDimuon.M();
-          Double_t maDiMu2 = lvDimuon2.M();
-
-
-          Double_t phiDiMu1 = lvDimuon.Phi();
-          Double_t phiDiMu2 = lvDimuon2.Phi();
-
-          Double_t plDiMu1 = TMath::Sqrt((lvDimuon.P()*lvDimuon.P())-(lvDimuon.Pt()*lvDimuon.Pt()));
-          Double_t plDiMu2 = TMath::Sqrt((lvDimuon2.P()*lvDimuon2.P())-(lvDimuon2.Pt()*lvDimuon2.Pt()));
-          Double_t yDiMu1 = TMath::Log((lvDimuon.E()+plDiMu1)/(lvDimuon.E()-plDiMu1))/2;
-          Double_t yDiMu2 = TMath::Log((lvDimuon2.E()+plDiMu2)/(lvDimuon2.E()-plDiMu2))/2;
-
-
-
-
-
-
-          ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu1, maDiMu2);
-          // ( (TH2F*)fOutput->UncheckedAt(kMaDbJpsi) )->Fill(maDiMu2, maDiMu1);
-
-          ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu1, ptDiMu2);
-          // ( (TH2F*)fOutput->UncheckedAt(kPtDbJpsi) )->Fill(ptDiMu2, ptDiMu1);
-
-          ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu1, yDiMu2);
-          // ( (TH2F*)fOutput->UncheckedAt(kYDbJpsi) )->Fill(yDiMu2, yDiMu1);
-
-          ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu1, phiDiMu2);
-          // ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
-
-          ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu1);
-          ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu2);
 
 
         }
       }
     }
   }
-
+  switch (counterDiMu){
+    case 0:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:0",fCurrentRunNumber,selected.Data()));
+      break;
+    case 1:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:1",fCurrentRunNumber,selected.Data()));
+      break;
+    case 2:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:2",fCurrentRunNumber,selected.Data()));
+      break;
+    case 3:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:3",fCurrentRunNumber,selected.Data()));
+      break;
+    case 4:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:4",fCurrentRunNumber,selected.Data()));
+      break;
+    default:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:Above4",fCurrentRunNumber,selected.Data()));
+      break;
+  }
+  switch (counterMu){
+    case 0:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:0/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 1:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:1/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 2:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:2/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 3:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:3/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 4:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    default:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Above4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+  }
   // Required both here and in UserCreateOutputObjects()
   PostData(1, fOutput);
   PostData(2, fEventCounters);
@@ -381,8 +502,12 @@ void AliDoubleJpsi::Terminate(Option_t *)
       fEventCounters->Print("trigger/run");
       cout<<"Event statistics with event selection "<<endl;
       fEventCounters->Print("trigger/run","selected:yes");
+      cout<<"Muons number in event "<<endl;
+      fEventCounters->Print("numMu/run");
       new TCanvas();
-      fEventCounters->Draw("run","trigger","selected:yes");
+      fEventCounters->Draw("run","numDiMu","selected:yes");
+      new TCanvas();
+      fEventCounters->Draw("run","numMu","selected:yes");
     }
   }
 
