@@ -40,7 +40,8 @@ class AliDoubleJpsi : public AliAnalysisTaskSE {
       kMaDbJpsi = 0,
       kPtDbJpsi = 1,
       kYDbJpsi = 2,
-      kPhiDbJpsi = 3
+      kPhiDbJpsi = 3,
+      kMaJpsi = 4
     };
 
     AliAODEvent* fAODEvent;       // AOD event

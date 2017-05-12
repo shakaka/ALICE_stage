@@ -145,6 +145,11 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   hPhiDbJpsi->Sumw2();
   fOutput->AddAtAndExpand( hPhiDbJpsi, kPhiDbJpsi );
 
+  TH1F *hMaJpsi= new TH1F("hMaJpsi", "Inclusive Jpsi Ma Distribution", 200, 2, 5);
+  hMaJpsi->Sumw2();
+  fOutput->AddAtAndExpand( hMaJpsi, kMaJpsi );
+
+
   // initialize event counters
   fEventCounters = new AliCounterCollection("eventCounters");
   fEventCounters->AddRubric("trigger",1000000);
@@ -340,6 +345,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
           ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu1, phiDiMu2);
           // ( (TH2F*)fOutput->UncheckedAt(kPhiDbJpsi) )->Fill(phiDiMu2, phiDiMu1);
+
+          ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu1);
+          ( (TH1F*)fOutput->UncheckedAt(kMaJpsi) )->Fill(maDiMu2);
 
 
         }

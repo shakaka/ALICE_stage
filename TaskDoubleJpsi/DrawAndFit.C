@@ -186,7 +186,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   TH2F *hYDbJpsi = dynamic_cast<TH2F *>(listOfHisto ->FindObject("hYDbJpsi") );
   TH2F *hPhiDbJpsi = dynamic_cast<TH2F *>(listOfHisto ->FindObject("hPhiDbJpsi") );
 //histogram for compare each fit method
-  Int_t nMethod = 18;
+  const Int_t nMethod = 18;
   TH1F *hNoJpsiX[projBin];//needed to be initiate
   TH1F *hNoJpsiY[projBin];
   TH1F *hChi2X[projBin];
@@ -543,10 +543,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 TF1 *fit = new TF1();
 Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB;
 TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
-TH1D *myhist[18];
-Double_t araJpsi[18];
-Double_t araBg[18];
-Double_t araErIntegral[18];
+TH1D *myhist[nMethod];
+Double_t araJpsi[nMethod];
+Double_t araBg[nMethod];
+Double_t araErIntegral[nMethod];
 TCanvas * c1[projBin];
 TCanvas * c2[projBin];
 
@@ -566,7 +566,7 @@ Double_t chiDiByNDF;
       c1[runs] = new TCanvas();
 
 
-      for (Int_t i = 0; i<18; i++){
+      for (Int_t i = 0; i<nMethod; i++){
         myhist[i] = (TH1D*)hArraProX[runs]->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
         gStyle->SetOptFit();
         TFitResultPtr rX = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SRL");
@@ -706,7 +706,7 @@ Double_t chiDiByNDF;
 
       araAvgX[runs] = araSumX[runs]/araCounterX[runs];
 
-      for (Int_t getSigma = 0; getSigma <18; getSigma++){
+      for (Int_t getSigma = 0; getSigma <nMethod; getSigma++){
         if (araJpsi[getSigma]>0){
           tmpSqrSum += araJpsi[getSigma]*araJpsi[getSigma];
         }
@@ -715,7 +715,7 @@ Double_t chiDiByNDF;
       araSigmaX[runs] = TMath::Sqrt(tmpSqrSum/araCounterX[runs]);
 
 
-      for (Int_t setBin = 0; setBin <18; setBin++){
+      for (Int_t setBin = 0; setBin <nMethod; setBin++){
         if (araJpsi[setBin]>0){
           hNoJpsiX[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
           hNoJpsiX[runs]->SetBinError(setBin+1, araErIntegral[setBin]);
@@ -745,7 +745,7 @@ Double_t chiDiByNDF;
         c2[runs] = new TCanvas();
 
 
-        for (Int_t i = 0; i<18; i++){
+        for (Int_t i = 0; i<nMethod; i++){
           myhist[i] = (TH1D*)hArraProY[runs]->Clone(((TF1*)araFunc->UncheckedAt(i))->GetName());
           gStyle->SetOptFit();
           TFitResultPtr rY = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SRL");
@@ -878,7 +878,7 @@ Double_t chiDiByNDF;
 
         }//loop methods = 18
 
-        for (Int_t setBin = 0; setBin <18; setBin++){
+        for (Int_t setBin = 0; setBin <nMethod; setBin++){
           if (araJpsi[setBin]>0){
             hNoJpsiY[runs]->SetBinContent(setBin+1, araJpsi[setBin]);
             hNoJpsiY[runs]->SetBinError(setBin+1, araErIntegral[setBin]);

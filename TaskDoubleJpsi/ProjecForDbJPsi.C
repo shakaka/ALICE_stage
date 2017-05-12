@@ -162,7 +162,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
   Int_t nx = 200;
-  const Int_t nProjBin = 30;
+  const Int_t nProjBin = 20;
   const Int_t nMethod = 18;
   Double_t araNum[nMethod];
   Double_t araErr[nMethod];
@@ -185,6 +185,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
   for(Int_t runs = 0; runs<nProjBin; runs++){
     file->GetObject(Form("NoJpsiX%d",runs), NoJpsiX[runs]);
     file->GetObject(Form("NoJpsiY%d",runs), NoJpsiY[runs]);
+    for (Int_t i =0; i< nMethod; i++){
+      araNum[i] = 0;
+      araErr[i] = 0;
+    }
     tmpCounter =0;
     //get the mean and error of each histogram X
     for (Int_t binNum = 0; binNum < nMethod; binNum++){
@@ -227,7 +231,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
   //get the mean and error of each histogram Y
-
+  for (Int_t i =0; i< nMethod; i++){
+    araNum[i] = 0;
+    araErr[i] = 0;
+  }
   tmpCounter = 0; // reset counter
   for (Int_t binNum = 0; binNum < nMethod; binNum++){
     if(NoJpsiY[runs]->GetBinContent(binNum+1)>0){
@@ -603,10 +610,14 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TH1F *hClSglY = new TH1F("hClSglY","Histo for rebuild signal of Y", nProjBin, 2, 5);
     TH1F *hClBglX = new TH1F("hClBglX","Histo for rebuild background of X", nProjBin, 2, 5);
     TH1F *hClBglY = new TH1F("hClBglY","Histo for rebuild backdround of Y", nProjBin, 2, 5);
+    TH1F *hClDalX = new TH1F("hClDalX","Histo for rebuild data of X", nProjBin, 2, 5);
+    TH1F *hClDalY = new TH1F("hClDalY","Histo for rebuild data of Y", nProjBin, 2, 5);
 
-    Double_t fClSglX, fClBglX, fClSglY, fClBglY;
 
-    Int_t ranData = 30;
+    Double_t fClSglX, fClbBglX, fClSglY, fClBgl;
+
+    Int_t ranData = 5000;
+    Int_t ranSig = 5;
 
     for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
       myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
@@ -639,9 +650,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
           //Try to rebuid the histogram of signal
           if (fitStatus==0)
-          // hClSglX->FillRandom( "CB2Fit" ,1);
-          fClSglX = CrystalBallExtended;
+          hClSglX->FillRandom( "CB2Fit" ,ranSig);
 
+          if (fitStatus==0)
+          hClDalX->FillRandom( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() ,ranData);
 
 
 
@@ -663,8 +675,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            // hClBglX->FillRandom( "fitBgP" ,ranData);
-            fClBglX = myPol23;
+            hClBglX->FillRandom( "fitBgP" ,ranData-ranSig);
 
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
@@ -681,8 +692,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            // hClBglX->FillRandom( "fitBgVWG" ,ranData);
-            fClBglX = varWGaus;
+            hClBglX->FillRandom( "fitBgVWG" ,ranData-ranSig);
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -698,8 +708,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            // hClBglX->FillRandom( "fitBgE" ,ranData);
-            fClBglX = expBg;
+            hClBglX->FillRandom( "fitBgE" ,ranData-ranSig);
           }
 
 
@@ -711,7 +720,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             // hClSglX->Draw();
             // hClBglX->Draw();
 
-            TLimitDataSource* mydatasource = new TLimitDataSource(fClSglX,fClBglX,myhist[iMethod]);
+            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglX,hClBglX,hClDalX);
             TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
 
             std::cout << "  CLs    : " << myconfidence->CLs()  << std::endl;
@@ -803,7 +812,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           CB2Fit->Draw("same");
 
           if (fitStatus==0)
-          hClSglY->FillRandom( "CB2Fit" ,1);
+          hClSglY->FillRandom( "CB2Fit" ,ranSig);
+
+          if (fitStatus==0)
+          hClDalY->FillRandom( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() ,ranData);
 
 
           Int_t nJpsi = (Int_t)(CB2Fit->Integral(2,5)/(3.0/binNum));
@@ -825,7 +837,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglY->FillRandom( "fitBgP" ,ranData);
+            hClBglY->FillRandom( "fitBgP" ,ranData-ranSig);
 
           }else if (6<=iMethod && iMethod<12){
             nB = fit->GetParameter("Nb");
@@ -842,7 +854,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglY->FillRandom( "fitBgVWG" ,ranData);
+            hClBglY->FillRandom( "fitBgVWG" ,ranData-ranSig);
           }else{
             p0 = fit->GetParameter("p0");
             p1 = fit->GetParameter("p1");
@@ -858,12 +870,12 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             Int_t nBackground = (Int_t)(fitBgE->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/nProjBin));
 
             if (fitStatus==0)
-            hClBglY->FillRandom( "fitBgE" ,ranData);
+            hClBglY->FillRandom( "fitBgE" ,ranData-ranSig);
           }
 
 
           if (fitStatus==0){
-            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglY,hClBglY,myhist[iMethod]);
+            TLimitDataSource* mydatasource = new TLimitDataSource(hClSglY,hClBglY,hClDalY);
             TConfidenceLevel *myconfidence = TLimit::ComputeLimit(mydatasource,50000);
 
             std::cout << "  CLs    : " << myconfidence->CLs()  << std::endl;
