@@ -162,7 +162,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
   Int_t nx = 200;
-  const Int_t nProjBin = 20;
+  const Int_t nProjBin = 30;
   const Int_t nMethod = 18;
   Double_t araNum[nMethod];
   Double_t araErr[nMethod];
@@ -613,18 +613,26 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
     TH1F *hClDalX = new TH1F("hClDalX","Histo for rebuild data of X", nProjBin, 2, 5);
     TH1F *hClDalY = new TH1F("hClDalY","Histo for rebuild data of Y", nProjBin, 2, 5);
 
+    TH1F *hNoDbJpsi = new TH1F("hNoDbJpsi", "Number of Double Jpsi", nMethod, 0, nMethod);
 
     Double_t fClSglX, fClbBglX, fClSglY, fClBgl;
 
     Int_t ranData = 5000;
     Int_t ranSig = 5;
 
+    Double_t araJpsi[nMethod];
+    Double_t araBg[nMethod];
+    Double_t araErIntegral[nMethod];
+
+
+
     for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
       myhist[iMethod] = (TH1D*)hProjX->Clone(((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
       gStyle->SetOptFit();
       TFitResultPtr rX = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SRL");
-      myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu1} [GeV]");
-      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
+      myhist[iMethod]->GetXaxis()->SetTitle("M_{#mu#mu2} [GeV]");
+      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{dN_{#mu#mu1}}{dm_{#mu#mu2}}#[]{#frac{1}{%.2fGeV}}", 3./nProjBin));
+      myhist[iMethod]->GetYaxis()->SetTitleOffset(1.2);
 
 
 
@@ -712,6 +720,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           }
 
 
+          araBg[iMethod] = nBackground;
+          araJpsi[iMethod] = nJpsi;
+
+
           //done reconstruct the signal and background
           //
 
@@ -736,9 +748,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
 
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-          Double_t sigOverB= -1;
-          if(nBackground!=0)
-          sigOverB = (Double_t)( nJpsi/nBackground ) ;
+          Double_t sigOverB = ( (Double_t)nJpsi/(Double_t)nBackground );
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
@@ -750,19 +760,24 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           Int_t iErMatrix = 0;
 
 
-          for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
-            // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
+          if (fitStatus==0){
+            for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
+              // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-            erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
-            iErMatrix++;
+              erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+              iErMatrix++;
 
-            if((iMatrix+1)%nPar==0){
-              iMatrix+=nPar-7;
+              if((iMatrix+1)%nPar==0){
+                iMatrix+=nPar-7;
+              }
             }
+
+            Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+          }else{
+            Double_t erIntegral = 0;
           }
 
-          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/nProjBin) );
-
+          araErIntegral[iMethod] = erIntegral;
 
 
           TLegend* leg = new TLegend(0.2, 0.2, 0.5, 0.3);
@@ -783,7 +798,90 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
             cDbJPsiX->Print("cDbJPsiX.pdf");
           }
 
+          if (hNoDbJpsi) {
+            hNoDbJpsi->GetXaxis()->SetBinLabel(iMethod+1,((TF1*)araFunc->UncheckedAt(iMethod))->GetName());
+            hNoDbJpsi->SetBinContent(iMethod+1, nJpsi);
+            hNoDbJpsi->SetBinError(iMethod+1, erIntegral);
+          }
+
     }
+
+    TCanvas* cNoDbJpsi = new TCanvas();
+    Int_t numFailFit = 0;
+    if (hNoDbJpsi) {
+      Double_t avgJ, sumJ, sqrtJ, rmsJ, statJ, avgError;
+
+      for(Int_t i = 0; i <nMethod; i++){
+        //weightting for pp
+        if (araErIntegral[i]!=0){
+          if (i%3==2){
+            sumJ += araJpsi[i]*2;
+            sqrtJ += araJpsi[i]*araJpsi[i]*2;
+            avgError += araErIntegral[i]*2;
+          }else{
+            sumJ += araJpsi[i];
+            sqrtJ += araJpsi[i]*araJpsi[i];
+            avgError += araErIntegral[i];
+          }
+        }else{
+          if (i%3==2){
+            numFailFit+=2;
+          }else{
+            numFailFit++;
+          }
+        }
+      }
+      avgJ = sumJ /( ((nMethod*4)/3)-numFailFit);
+      rmsJ = TMath::Sqrt( sqrtJ/( ((nMethod*4)/3)-numFailFit ) );
+      avgError = avgError/( ((nMethod*4)/3)-numFailFit);
+
+//Another loop cause needing in Average
+      for(Int_t i = 0; i <nMethod; i++){
+        if (i%3==2){
+          statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ)*2 ;
+        }else{
+          statJ +=(araJpsi[i]-avgJ)*(araJpsi[i]-avgJ) ;
+        }
+      }
+
+      statJ = TMath::Sqrt( statJ/( ((nMethod*4)/3)-numFailFit) );
+
+      hNoDbJpsi->Draw("E");
+
+      TLine *avgline = new TLine(0,avgJ,nMethod,avgJ);
+      avgline->SetLineColor(kRed);
+      avgline->Draw();
+
+      TLine *statline = new TLine(0,avgJ+statJ,nMethod,avgJ+statJ);
+      statline->SetLineColor(kRed);
+      statline->SetLineStyle(9);
+      statline->Draw();
+
+      TLine *statline2 = new TLine(0,avgJ-statJ,nMethod,avgJ-statJ);
+      statline2->SetLineColor(kRed);
+      statline2->SetLineStyle(9);
+      statline2->Draw();
+
+
+      TLegend* legRe = new TLegend(0.3, 0.33, 0.89, 0.90);
+      legRe->SetFillStyle(0);
+      legRe->SetLineColorAlpha(kBlue, 0);
+      legRe->SetTextColor(kBlack);
+      legRe->SetMargin(0.1);
+      // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
+      // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
+      legRe->AddEntry((TObject*)0,Form("N = %.0f (stat) %.2f (sys) %.2f",avgJ, avgError, statJ) , "");
+      legRe->Draw();
+
+
+      cNoDbJpsi->Print("cNoDbJpsi.pdf");
+    }
+
+
+
+
+
+
     TCanvas *cDbJPsiY = new TCanvas();
 
     for(Int_t iMethod = 0 ; iMethod < nMethod ; iMethod++){
@@ -791,8 +889,10 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
       gStyle->SetOptFit();
       TFitResultPtr rY = myhist[iMethod]->Fit(((TF1*)araFunc->UncheckedAt(iMethod)), "SRL");
 
-      myhist[iMethod]->GetXaxis()->SetTitle("M^{#mu#mu2} [GeV]");
-      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{N}{%.2fGeV}", 3./nProjBin));
+      myhist[iMethod]->GetXaxis()->SetTitle("M_{#mu#mu1} [GeV]");
+      myhist[iMethod]->GetYaxis()->SetTitle(Form("#frac{dN_{#mu#mu2}}{dm_{#mu#mu1}}#[]{#frac{1}{%.2fGeV}}", 3./nProjBin));
+      myhist[iMethod]->GetYaxis()->SetTitleOffset(1.2);
+
       //Get parameters
           fit = myhist[iMethod]->GetFunction( ((TF1*)araFunc->UncheckedAt(iMethod))->GetName() );
 
@@ -889,9 +989,7 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           }
 
           // printf("%s = %d\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), nBackground);
-          Double_t sigOverB = -1;
-          if(nBackground!=0)
-          sigOverB = (Double_t)( nJpsi/nBackground ) ;
+          Double_t sigOverB = ( (Double_t)nJpsi/(Double_t)nBackground );
 
           // printf("%s = %f\n", ((TF1*)araFunc->UncheckedAt(i))->GetName(), sigOverB);
 
@@ -903,18 +1001,22 @@ void ProjecForDbJPsi( TString fileName ="NoJpsi.root" ){
           Int_t iErMatrix = 0;
 
 
-          for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
-            // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
+          if (fitStatus==0){
+            for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
+              // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-            erMatrix[iErMatrix] = (rY->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
-            iErMatrix++;
+              erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+              iErMatrix++;
 
-            if((iMatrix+1)%nPar==0){
-              iMatrix+=nPar-7;
+              if((iMatrix+1)%nPar==0){
+                iMatrix+=nPar-7;
+              }
             }
-          }
 
-          Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/nProjBin) );
+            Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+          }else{
+            Double_t erIntegral = 0;
+          }
 
 
 

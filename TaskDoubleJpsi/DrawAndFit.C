@@ -166,9 +166,9 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
     printf("error with eventCounters, exit!\n");
     return;
   }
-
-  new TCanvas();
+  TCanvas *cEventCounter = new TCanvas();
   eventCounters->Draw("run","trigger","selected:yes");
+  cEventCounter->Print("cEventCounter.pdf(");
 
 
   Double_t nCMUL7 = eventCounters->GetSum("selected:yes/trigger:CMUL7-B-NOPF-MUFAST");
@@ -194,6 +194,43 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
 
   TH1F *hSOBX[projBin];
   TH1F *hSOBY[projBin];
+
+  TH1F *hNoMu = new TH1F("hNoMu", "Number of Muons", 6, 0, 6);
+  TH1F *hNoDiMu = new TH1F("hNoDiMu", "Number of Dimuons", 6, 0, 6);
+
+  Double_t numDiMu[6];
+  Double_t numMu[6];
+
+  Double_t numDiMu[0] = eventCounters->GetSum("selected:yes/numDiMu:0");
+  Double_t numDiMu[1] = eventCounters->GetSum("selected:yes/numDiMu:1");
+  Double_t numDiMu[2] = eventCounters->GetSum("selected:yes/numDiMu:2");
+  Double_t numDiMu[3] = eventCounters->GetSum("selected:yes/numDiMu:3");
+  Double_t numDiMu[4] = eventCounters->GetSum("selected:yes/numDiMu:4");
+  Double_t numDiMu[5] = eventCounters->GetSum("selected:yes/numDiMu:Above4");
+
+  Double_t numMu[0] = eventCounters->GetSum("selected:yes/numMu:0");
+  Double_t numMu[1] = eventCounters->GetSum("selected:yes/numMu:1");
+  Double_t numMu[2] = eventCounters->GetSum("selected:yes/numMu:2");
+  Double_t numMu[3] = eventCounters->GetSum("selected:yes/numMu:3");
+  Double_t numMu[4] = eventCounters->GetSum("selected:yes/numMu:4");
+  Double_t numMu[5] = eventCounters->GetSum("selected:yes/numMu:Above4");
+
+if(hNoMu&&hNoDiMu){
+  for (Int_t i = 0; i<6; i++){
+    hNoMu->GetXaxis()->SetBinLabel(i+1,Form("%d", i));
+    hNoMu->SetBinContent(i+1,numMu[i]);
+
+    hNoDiMu->GetXaxis()->SetBinLabel(i+1,Form("%d", i));
+    hNoDiMu->SetBinContent(i+1,numDiMu[i]);
+  }
+  hNoMu->Draw();
+  cEventCounter->Print("cEventCounter.pdf");
+  hNoDiMu->Draw();
+  cEventCounter->Print("cEventCounter.pdf)");
+}
+
+
+
 
   for (Int_t i = 0; i<projBin ; i++){
     hNoJpsiX[i] = new TH1F(Form("hNoJpsiX%d", i), "Number of Jpsi", nMethod, 0, nMethod);
@@ -252,6 +289,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnPC4->FixParameter(11, 3.23);
   fit25FcnPC4->FixParameter(12, 2.55);
   fit25FcnPC4->FixParameter(13, 1.56);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit25FcnPC4->SetRange(2.2, 4.5);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -267,6 +306,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnPC3->FixParameter(11, 3.98);
   fit25FcnPC3->FixParameter(12, 2.3);
   fit25FcnPC3->FixParameter(13, 3.03);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit25FcnPC3->SetRange(2.2, 4.5);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -282,6 +323,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnPCpp->FixParameter(11, 6.97);
   fit25FcnPCpp->FixParameter(12, 1.86);
   fit25FcnPCpp->FixParameter(13, 14.99);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit25FcnPCpp->SetRange(2.2, 4.5);
 
 //2.4~4.7
@@ -298,6 +341,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPC4->FixParameter(11, 3.23);
   fit47FcnPC4->FixParameter(12, 2.55);
   fit47FcnPC4->FixParameter(13, 1.56);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit47FcnPC4->SetRange(2.4, 4.7);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -313,6 +358,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPC3->FixParameter(11, 3.98);
   fit47FcnPC3->FixParameter(12, 2.3);
   fit47FcnPC3->FixParameter(13, 3.03);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit47FcnPC3->SetRange(2.4, 4.7);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -328,6 +375,8 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnPCpp->FixParameter(11, 6.97);
   fit47FcnPCpp->FixParameter(12, 1.86);
   fit47FcnPCpp->FixParameter(13, 14.99);
+  fit25FcnPC4->SetParLimits(7, 0, 1e6);
+  fit25FcnPC4->SetParLimits(6, 0, 1e6);
   fit47FcnPCpp->SetRange(2.4, 4.7);
 
 
@@ -346,6 +395,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnVC4->FixParameter(8, 3.23);
   fit25FcnVC4->FixParameter(9, 2.55);
   fit25FcnVC4->FixParameter(10, 1.56);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit25FcnVC4->SetRange(2.2, 4.5);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -358,6 +408,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnVC3->FixParameter(8, 3.98);
   fit25FcnVC3->FixParameter(9, 2.3);
   fit25FcnVC3->FixParameter(10, 3.03);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit25FcnVC3->SetRange(2.2, 4.5);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -370,6 +421,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnVCpp->FixParameter(8, 6.97);
   fit25FcnVCpp->FixParameter(9, 1.86);
   fit25FcnVCpp->FixParameter(10, 14.99);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit25FcnVCpp->SetRange(2.2, 4.5);
 
 //2.4~4.7
@@ -383,6 +435,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnVC4->FixParameter(8, 3.23);
   fit47FcnVC4->FixParameter(9, 2.55);
   fit47FcnVC4->FixParameter(10, 1.56);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit47FcnVC4->SetRange(2.4, 4.7);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -395,6 +448,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnVC3->FixParameter(8, 3.98);
   fit47FcnVC3->FixParameter(9, 2.3);
   fit47FcnVC3->FixParameter(10, 3.03);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit47FcnVC3->SetRange(2.4, 4.7);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -407,6 +461,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnVCpp->FixParameter(8, 6.97);
   fit47FcnVCpp->FixParameter(9, 1.86);
   fit47FcnVCpp->FixParameter(10, 14.99);
+  fit25FcnPC4->SetParLimits(4, 0, 1e6);
   fit47FcnVCpp->SetRange(2.4, 4.7);
 
 
@@ -424,7 +479,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnEC4->FixParameter(6, 1.06);
   fit25FcnEC4->FixParameter(7, 3.23);
   fit25FcnEC4->FixParameter(8, 2.55);
-  fit25FcnEC4->FixParameter(9, 1.56);
+  fit25FcnEC4->FixParameter(3, 1.56);
   fit25FcnEC4->SetRange(2.2, 4.5);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -437,6 +492,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnEC3->FixParameter(7, 3.98);
   fit25FcnEC3->FixParameter(8, 2.3);
   fit25FcnEC3->FixParameter(9, 3.03);
+  fit25FcnPC4->SetParLimits(3, 0, 1e6);
   fit25FcnEC3->SetRange(2.2, 4.5);
 
   //pp13TeV0.98,6.97,1.86,14.99
@@ -449,6 +505,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit25FcnECpp->FixParameter(7, 6.97);
   fit25FcnECpp->FixParameter(8, 1.86);
   fit25FcnECpp->FixParameter(9, 14.99);
+  fit25FcnPC4->SetParLimits(3, 0, 1e6);
   fit25FcnECpp->SetRange(2.2, 4.5);
 
   //2.4~4.7
@@ -462,6 +519,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnEC4->FixParameter(7, 3.23);
   fit47FcnEC4->FixParameter(8, 2.55);
   fit47FcnEC4->FixParameter(9, 1.56);
+  fit25FcnPC4->SetParLimits(3, 0, 1e6);
   fit47FcnEC4->SetRange(2.4, 4.7);
 
   //GEANT3 0.97,3.98,2.3,3.03
@@ -474,7 +532,9 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnEC3->FixParameter(7, 3.98);
   fit47FcnEC3->FixParameter(8, 2.3);
   fit47FcnEC3->FixParameter(9, 3.03);
+  fit25FcnPC4->SetParLimits(3, 0, 1e6);
   fit47FcnEC3->SetRange(2.4, 4.7);
+
 
   //pp13TeV0.98,6.97,1.86,14.99
   TF1 *fit47FcnECpp = new TF1("fit47FcnECpp",expCB,2,5,10);
@@ -486,6 +546,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   fit47FcnECpp->FixParameter(7, 6.97);
   fit47FcnECpp->FixParameter(8, 1.86);
   fit47FcnECpp->FixParameter(9, 14.99);
+  fit25FcnPC4->SetParLimits(3, 0, 1e6);
   fit47FcnECpp->SetRange(2.4, 4.7);
 
 
@@ -582,6 +643,7 @@ Double_t chiDiByNDF;
             alphaR = fit->GetParameter("alphaR");
             nR = fit->GetParameter("nR");
             chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
+            Int_t fitStatus = rX;
 
             CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
             CB2Fit->SetLineColor(2);
@@ -642,19 +704,22 @@ Double_t chiDiByNDF;
             Double_t erMatrix[49];
             Int_t iErMatrix = 0;
 
+            if (fitStatus==0){
+              for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
+                // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-            for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
-              // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
+                erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+                iErMatrix++;
 
-              erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
-              iErMatrix++;
-
-              if((iMatrix+1)%nPar==0){
-                iMatrix+=nPar-7;
+                if((iMatrix+1)%nPar==0){
+                  iMatrix+=nPar-7;
+                }
               }
-            }
 
-            Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+              Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+            }else{
+              Double_t erIntegral = 0;
+            }
 
 
 
@@ -665,12 +730,11 @@ Double_t chiDiByNDF;
             leg->SetMargin(0.1);
             leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
             leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
-            Int_t fitStatus = rX;
             leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
             leg->Draw();
 
             if(i == 0){
-              c1[runs]->Print(Form("cX%d.pdf(",runs));
+              c1[runs]->Print( Form("cX%d.pdf(",runs) );
             }else if(i == 17){
               c1[runs]->Print(Form("cX%d.pdf)",runs));
             }else{
@@ -761,6 +825,7 @@ Double_t chiDiByNDF;
               alphaR = fit->GetParameter("alphaR");
               nR = fit->GetParameter("nR");
               chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
+              Int_t fitStatus = rY;
 
               CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
               CB2Fit->SetLineColor(2);
@@ -825,18 +890,22 @@ Double_t chiDiByNDF;
               Int_t iErMatrix = 0;
 
 
-              for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
-                // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
+              if (fitStatus==0){
+                for (Int_t iMatrix= ( (nPar-7)*nPar )-1+ (nPar-6); iMatrix<nPar*nPar; iMatrix++){
+                  // printf("gg%d = %f\n",iMatrix, (r->GetCovarianceMatrix()->GetMatrixArray())[iMatrix]);
 
-                erMatrix[iErMatrix] = (rY->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
-                iErMatrix++;
+                  erMatrix[iErMatrix] = (rX->GetCovarianceMatrix()->GetMatrixArray())[iMatrix];
+                  iErMatrix++;
 
-                if((iMatrix+1)%nPar==0){
-                  iMatrix+=nPar-7;
+                  if((iMatrix+1)%nPar==0){
+                    iMatrix+=nPar-7;
+                  }
                 }
-              }
 
-              Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+                Double_t erIntegral = ( CB2Fit->IntegralError(2,5,CB2Fit->GetParameters(), erMatrix)/(3.0/50) );
+              }else{
+                Double_t erIntegral = 0;
+              }
 
 
 
@@ -847,7 +916,6 @@ Double_t chiDiByNDF;
               leg->SetMargin(0.1);
               leg->AddEntry((TObject*)0,Form("Nsignal/B = %f",sigOverB) , "");
               leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %f.0",nJpsi, erIntegral) , "");
-              Int_t fitStatus = rY;
               leg->AddEntry((TObject*)0,Form("fit status = %d",fitStatus) , "");
               leg->Draw();
 

@@ -374,16 +374,16 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   // for Background testing
   TF1 *fitBgE = new TF1("fitBgE",varGausCB,2,5,2);
   fitBgE->SetParameters(1, 1);
-  fitBgE->SetRange(2, 5);
+  // fitBgE->SetRange(2, 5);
 
   TF1 *fitBgP = new TF1("fitBgP",myPol23,2,5,7);
   fitBgP->SetParameters(4.65e6, -2.28e6, 9.49e4,-25.5,49.6,-24.8, 4.5);//1.1e6, 2.83e5, 5.86e4,-11.7,51.1,-26, 3.8(2-5)
   fitBgP->SetParLimits(6, 3, 8);
-  fitBgP->SetRange(2.2, 4.5);
+  // fitBgP->SetRange(2.2, 4.5);
 
-  TF1 *fitBgVWG = new TF1("fitBgVWG",varGausCB,2,5,4);
+  TF1 *fitBgVWG = new TF1("fitBgVWG",varWGaus,2,5,4);
   fitBgVWG->SetParameters(240000, 1.7, -0.7, -0.2);
-  fitBgVWG->SetRange(2, 5);
+  // fitBgVWG->SetRange(2, 5);
 
 
   // if (hDiMuPt) {
@@ -401,7 +401,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
   if (hDiMuM) {
 
     TF1 *fit = new TF1();
-    Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB;
+    Double_t nS, miuS, sigma, alphaL, nL, alphaR, nR, p0, p1, p2, p20, p21, p22, p23, nB, miuB, bA, bB, chiDiByNDF;
     TF1 *CB2Fit = new TF1("CB2Fit",CrystalBallExtended,2,5,7);
 
     Double_t araJpsi[12];
@@ -414,6 +414,11 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
       gStyle->SetOptFit();
       TFitResultPtr r = myhist[i]->Fit(((TF1*)araFunc->UncheckedAt(i)), "SR");
 
+      myhist[i]->GetXaxis()->SetTitle("M_{#mu#mu} [GeV]");
+      myhist[i]->GetYaxis()->SetTitle(Form("N"));
+      myhist[i]->GetYaxis()->SetTitleOffset(1.2);
+
+
       //Get parameters
           fit = myhist[i]->GetFunction( ((TF1*)araFunc->UncheckedAt(i))->GetName() );
 
@@ -424,8 +429,12 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
           nL = fit->GetParameter("nL");
           alphaR = fit->GetParameter("alphaR");
           nR = fit->GetParameter("nR");
+          chiDiByNDF = fit->GetChisquare()/fit->GetNDF();
+          Int_t fitStatus = r;
 
           CB2Fit->SetParameters(nS, miuS, sigma, alphaL, nL, alphaR, nR);
+          CB2Fit->SetLineColor(2);
+          CB2Fit->Draw("same");
 
           // CB2Fit->Draw();
 
@@ -440,6 +449,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
             p23 = fit->GetParameter("p23");
 
             fitBgP->SetParameters(p0, p1, p2, p20, p21, p22, p23);
+            fitBgP->SetLineColor(4);
+            fitBgP->SetLineStyle(1);
+            fitBgP->SetLineWidth(3);
+            fitBgP->Draw("same");
 
             Int_t nBackground = (Int_t)(fitBgP->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
           }else{
@@ -449,6 +462,10 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
             bB = fit->GetParameter("B");
 
             fitBgVWG->SetParameters(nB, miuB, bA, bB);
+            fitBgVWG->SetLineColor(4);
+            fitBgVWG->SetLineStyle(1);
+            fitBgVWG->SetLineWidth(3);
+            fitBgVWG->Draw("same");
 
             Int_t nBackground = (Int_t)(fitBgVWG->Integral(miuS-3*sigma, miuS+3*sigma)/(3.0/200));
           }
@@ -495,7 +512,7 @@ void DrawAndFit( TString fileName ="AliCombined.root" ){
           // leg->AddEntry((TObject*)0,"Pb-Pb collisions, #sqrt{s_{NN}}=5 TeV", "");//to write something without numerical values for variables
           // leg->AddEntry((TObject*)0,Form("M_{J/#psi} = %3.3f #pm %4.4f Gev/c^{2}",jpsiMean,jpsiMeanError) , "");//to write something and including numerical variables
           leg->AddEntry((TObject*)0,Form("Nsignal/B = %.2f",sigOverB) , "");
-          leg->AddEntry((TObject*)0,Form("N of JPsi = %d ± %.0f",nJpsi, erIntegral) , "");
+          leg->AddEntry((TObject*)0,Form("N of JPsi = %d #pm %.0f",nJpsi, erIntegral) , "");
           leg->Draw();
 
           if(i == 0){

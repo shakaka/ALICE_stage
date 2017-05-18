@@ -272,13 +272,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
           if(track1->Charge()*track2->Charge()==-1){
             if (track3->Charge()*track4->Charge()==-1){
 
-              getDiMu = kTRUE;
-
               lvDimuon = lvMuon1 + lvMuon2;
               lvDimuon2= lvMuon3 + lvMuon4;
 
               if(track1->Charge()*track3->Charge()==-1){
                 if (track2->Charge()*track4->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon3;
                   lvDimuon4 = lvMuon2 + lvMuon4;
                 }
@@ -286,6 +285,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track4->Charge()==-1){
                 if (track2->Charge()*track3->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon4;
                   lvDimuon4 = lvMuon2 + lvMuon3;
                 }
@@ -296,13 +296,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
           if(track1->Charge()*track3->Charge()==-1){
             if (track2->Charge()*track4->Charge()==-1){
 
-              getDiMu = kTRUE;
-
               lvDimuon = lvMuon1 + lvMuon3;
               lvDimuon2= lvMuon2 + lvMuon4;
 
               if(track1->Charge()*track2->Charge()==-1){
                 if (track3->Charge()*track4->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon2;
                   lvDimuon4 = lvMuon3 + lvMuon4;
                 }
@@ -310,6 +309,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track4->Charge()==-1){
                 if (track2->Charge()*track3->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon4;
                   lvDimuon4 = lvMuon2 + lvMuon3;
                 }
@@ -320,13 +320,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
           if(track1->Charge()*track4->Charge()==-1){
             if (track2->Charge()*track3->Charge()==-1){
 
-              getDiMu = kTRUE;
-
               lvDimuon = lvMuon1 + lvMuon4;
               lvDimuon2= lvMuon2 + lvMuon3;
 
               if(track1->Charge()*track2->Charge()==-1){
                 if (track3->Charge()*track4->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon2;
                   lvDimuon4 = lvMuon3 + lvMuon4;
                 }
@@ -334,6 +333,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track3->Charge()==-1){
                 if (track2->Charge()*track4->Charge()==-1){
+                  getDiMu = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon3;
                   lvDimuon4 = lvMuon2 + lvMuon4;
                 }
@@ -346,7 +346,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
           if(getDiMu == kTRUE){
 
-            counterDiMu++;
+            counterDiMu+=2;
 
             Double_t ptDiMu1 = lvDimuon.Pt();
             Double_t ptDiMu2 = lvDimuon2.Pt();
@@ -440,20 +440,23 @@ void AliDoubleJpsi::UserExec(Option_t *)
     case 0:
       fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:0",fCurrentRunNumber,selected.Data()));
       break;
-    case 1:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:1",fCurrentRunNumber,selected.Data()));
-      break;
     case 2:
       fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:2",fCurrentRunNumber,selected.Data()));
-      break;
-    case 3:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:3",fCurrentRunNumber,selected.Data()));
       break;
     case 4:
       fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:4",fCurrentRunNumber,selected.Data()));
       break;
+    case 6:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:6",fCurrentRunNumber,selected.Data()));
+      break;
+    case 8:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:8",fCurrentRunNumber,selected.Data()));
+      break;
+    case 10:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:10",fCurrentRunNumber,selected.Data()));
+      break;
     default:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:Above4",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:Above10",fCurrentRunNumber,selected.Data()));
       break;
   }
   switch (counterMu){
@@ -472,8 +475,26 @@ void AliDoubleJpsi::UserExec(Option_t *)
     case 4:
       fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
+    case 5:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:5/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 6:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:6/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 7:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:7/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 8:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:8/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 9:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:9/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
+    case 10:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      break;
     default:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Above4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Above10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
   }
   // Required both here and in UserCreateOutputObjects()
