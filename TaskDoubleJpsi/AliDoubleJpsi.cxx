@@ -157,7 +157,7 @@ void AliDoubleJpsi::UserCreateOutputObjects(){
   fEventCounters->AddRubric("selected","yes/no");
   fEventCounters->AddRubric("numMu",1000000);
   fEventCounters->AddRubric("numDiMu",1000000);
-
+  fEventCounters->AddRubric("numDiMuPair",1000000);
 
   fEventCounters->Init();
 
@@ -193,12 +193,12 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
   TString fillName;
 
-  fillName = Form("trigger:any/run:%d/selected:%s/numMu:Sum/numDiMu:Non",fCurrentRunNumber,selected.Data());
+  fillName = Form("trigger:any/run:%d/selected:%s/numMu:Sum/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data());
   fEventCounters->Count(fillName.Data());
 
   for ( Int_t iTrig = 0; iTrig < trig->GetEntries(); iTrig++ ) {
     TString triggerName = ( (TObjString*) trig->At(iTrig) )->GetString();
-    fillName = Form("trigger:%s/run:%d/selected:%s/numMu:Sum/numDiMu:Non",triggerName.Data(),fCurrentRunNumber,selected.Data());
+    fillName = Form("trigger:%s/run:%d/selected:%s/numMu:Sum/numDiMu:Non/numDiMuPair:Non",triggerName.Data(),fCurrentRunNumber,selected.Data());
     fEventCounters->Count(fillName.Data());
   }
 
@@ -214,8 +214,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
   nTracks = fAODEvent->GetNumberOfTracks();
 
 
-  Int_t counterDiMu = 0;
+  Int_t counterDiMuPair = 0;
   Int_t counterMu = 0;
+  Int_t counterDiMu = 0;
   //Loop to match up 2 dimuons
   for (Int_t iTrack = 0; iTrack < nTracks; iTrack++) {
     AliAODTrack *track1 = (AliAODTrack*) fAODEvent->GetTrack(iTrack);
@@ -257,7 +258,7 @@ void AliDoubleJpsi::UserExec(Option_t *)
           Float_t muonMass2 = AliAnalysisMuonUtility::MuonMass2();
           TLorentzVector lvMuon1, lvMuon2, lvMuon3, lvMuon4, lvDimuon, lvDimuon2, lvDimuon3, lvDimuon4, lvTemp;
 
-          Bool_t getDiMu = 0;
+          Bool_t getDiMuPair = 0;
 
           Float_t energy = TMath::Sqrt(track1->P()*track1->P() + muonMass2);
           Float_t energy2 = TMath::Sqrt(track2->P()*track2->P() + muonMass2);
@@ -271,13 +272,14 @@ void AliDoubleJpsi::UserExec(Option_t *)
           //Choose 12, 34
           if(track1->Charge()*track2->Charge()==-1){
             if (track3->Charge()*track4->Charge()==-1){
-
+              counterDiMu++;
               lvDimuon = lvMuon1 + lvMuon2;
               lvDimuon2= lvMuon3 + lvMuon4;
 
               if(track1->Charge()*track3->Charge()==-1){
                 if (track2->Charge()*track4->Charge()==-1){
-                  getDiMu = kTRUE;
+                  getDiMuPair = kTRUE;
+                  counterDiMu++;
                   lvDimuon3 = lvMuon1 + lvMuon3;
                   lvDimuon4 = lvMuon2 + lvMuon4;
                 }
@@ -285,7 +287,8 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track4->Charge()==-1){
                 if (track2->Charge()*track3->Charge()==-1){
-                  getDiMu = kTRUE;
+                  getDiMuPair = kTRUE;
+                  counterDiMu++;
                   lvDimuon3 = lvMuon1 + lvMuon4;
                   lvDimuon4 = lvMuon2 + lvMuon3;
                 }
@@ -295,13 +298,14 @@ void AliDoubleJpsi::UserExec(Option_t *)
           //Choose 13, 24
           if(track1->Charge()*track3->Charge()==-1){
             if (track2->Charge()*track4->Charge()==-1){
-
+              counterDiMu++;
               lvDimuon = lvMuon1 + lvMuon3;
               lvDimuon2= lvMuon2 + lvMuon4;
 
               if(track1->Charge()*track2->Charge()==-1){
                 if (track3->Charge()*track4->Charge()==-1){
-                  getDiMu = kTRUE;
+                  counterDiMu++;
+                  getDiMuPair = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon2;
                   lvDimuon4 = lvMuon3 + lvMuon4;
                 }
@@ -309,7 +313,8 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track4->Charge()==-1){
                 if (track2->Charge()*track3->Charge()==-1){
-                  getDiMu = kTRUE;
+                  counterDiMu++;
+                  getDiMuPair = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon4;
                   lvDimuon4 = lvMuon2 + lvMuon3;
                 }
@@ -319,13 +324,14 @@ void AliDoubleJpsi::UserExec(Option_t *)
           //Choose 14,23
           if(track1->Charge()*track4->Charge()==-1){
             if (track2->Charge()*track3->Charge()==-1){
-
+              counterDiMu++;
               lvDimuon = lvMuon1 + lvMuon4;
               lvDimuon2= lvMuon2 + lvMuon3;
 
               if(track1->Charge()*track2->Charge()==-1){
                 if (track3->Charge()*track4->Charge()==-1){
-                  getDiMu = kTRUE;
+                  counterDiMu++;
+                  getDiMuPair = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon2;
                   lvDimuon4 = lvMuon3 + lvMuon4;
                 }
@@ -333,7 +339,8 @@ void AliDoubleJpsi::UserExec(Option_t *)
 
               if(track1->Charge()*track3->Charge()==-1){
                 if (track2->Charge()*track4->Charge()==-1){
-                  getDiMu = kTRUE;
+                  counterDiMu++;
+                  getDiMuPair = kTRUE;
                   lvDimuon3 = lvMuon1 + lvMuon3;
                   lvDimuon4 = lvMuon2 + lvMuon4;
                 }
@@ -344,9 +351,9 @@ void AliDoubleJpsi::UserExec(Option_t *)
           //Getting data wanted
 
 
-          if(getDiMu == kTRUE){
+          if(getDiMuPair == kTRUE){
 
-            counterDiMu+=2;
+            counterDiMuPair+=2;
 
             Double_t ptDiMu1 = lvDimuon.Pt();
             Double_t ptDiMu2 = lvDimuon2.Pt();
@@ -436,65 +443,133 @@ void AliDoubleJpsi::UserExec(Option_t *)
       }
     }
   }
-  switch (counterDiMu){
+  switch (counterDiMuPair){
     case 0:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:0",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:0/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 2:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:2",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:2/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 4:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:4",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 6:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:6",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:6/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 8:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:8",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:8/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 10:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:10",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
     default:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMu:Above10",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Above10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
       break;
   }
   switch (counterMu){
     case 0:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:0/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:0/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 1:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:1/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:1/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 2:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:2/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:2/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 3:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:3/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:3/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 4:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:4/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:4/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 5:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:5/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:5/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 6:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:6/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:6/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 7:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:7/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:7/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 8:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:8/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:8/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 9:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:9/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:9/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     case 10:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:10/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
       break;
     default:
-      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Above10/numDiMu:Non",fCurrentRunNumber,selected.Data()));
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Above10/numDiMu:Non/numDiMuPair:Non",fCurrentRunNumber,selected.Data()));
+      break;
+  }
+  switch (counterDiMu){
+    case 0:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:0",fCurrentRunNumber,selected.Data()));
+      break;
+    case 1:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:1",fCurrentRunNumber,selected.Data()));
+      break;
+    case 2:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:2",fCurrentRunNumber,selected.Data()));
+      break;
+    case 3:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:3",fCurrentRunNumber,selected.Data()));
+      break;
+    case 4:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:4",fCurrentRunNumber,selected.Data()));
+      break;
+    case 5:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:5",fCurrentRunNumber,selected.Data()));
+      break;
+    case 6:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:6",fCurrentRunNumber,selected.Data()));
+      break;
+    case 7:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:7",fCurrentRunNumber,selected.Data()));
+      break;
+    case 8:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:8",fCurrentRunNumber,selected.Data()));
+      break;
+    case 9:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:9",fCurrentRunNumber,selected.Data()));
+      break;
+    case 10:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:10",fCurrentRunNumber,selected.Data()));
+      break;
+    case 11:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:11",fCurrentRunNumber,selected.Data()));
+      break;
+    case 12:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:12",fCurrentRunNumber,selected.Data()));
+      break;
+    case 13:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:13",fCurrentRunNumber,selected.Data()));
+      break;
+    case 14:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:14",fCurrentRunNumber,selected.Data()));
+      break;
+    case 15:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:15",fCurrentRunNumber,selected.Data()));
+      break;
+    case 16:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:16",fCurrentRunNumber,selected.Data()));
+      break;
+    case 17:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:17",fCurrentRunNumber,selected.Data()));
+      break;
+    case 18:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:18",fCurrentRunNumber,selected.Data()));
+      break;
+    case 19:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:19",fCurrentRunNumber,selected.Data()));
+      break;
+    case 20:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:20",fCurrentRunNumber,selected.Data()));
+      break;
+    default:
+      fEventCounters->Count(Form("trigger:any/run:%d/selected:%s/numMu:Non/numDiMuPair:Non/numDiMu:Above20",fCurrentRunNumber,selected.Data()));
       break;
   }
   // Required both here and in UserCreateOutputObjects()
@@ -529,6 +604,8 @@ void AliDoubleJpsi::Terminate(Option_t *)
       fEventCounters->Draw("run","numDiMu","selected:yes");
       new TCanvas();
       fEventCounters->Draw("run","numMu","selected:yes");
+      new TCanvas();
+      fEventCounters->Draw("run","numDiMuPair","selected:yes");
     }
   }
 
